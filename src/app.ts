@@ -1,4 +1,5 @@
-import express, { Request, Response } from 'express';
+import "reflect-metadata";
+import express from 'express';
 import userRouter from "./UserManagment/Infraestructure/Routes/UserRoutes"
 
 const app = express();
