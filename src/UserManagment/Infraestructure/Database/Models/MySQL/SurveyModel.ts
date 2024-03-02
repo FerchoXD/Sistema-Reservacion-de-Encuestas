@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Question } from './QuestionModel';
 
-@Entity()
-export class Survey {
+@Entity('surveys')
+export class SurveyModel {
     @PrimaryGeneratedColumn('uuid')
     uuid!: string;
 

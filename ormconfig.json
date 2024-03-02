@@ -8,7 +8,7 @@
    "synchronize": true,
    "logging": false,
    "entities": [
-       "src/UserManagment/Infraestructure/Models/MySQL/*.ts"
+       "src/UserManagment/Infraestructure/Database/Models/MySQL/*.ts"
    ],
    "migrations": [
       "src/migration/**/*.ts"

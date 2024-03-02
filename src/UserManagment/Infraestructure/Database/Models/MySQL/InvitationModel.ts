@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Participant } from './ParticipantModel';
-import { Survey } from './SurveyModel';
+import { SurveyModel } from './SurveyModel';
 
-@Entity()
+@Entity("invitations")
 export class Invitation {
     @PrimaryGeneratedColumn('uuid')
     uuid!: string;
@@ -16,6 +16,6 @@ export class Invitation {
     @ManyToOne(() => Participant)
     participant!: Participant;
 
-    @ManyToOne(() => Survey)
-    survey!: Survey;
+    @ManyToOne(() => SurveyModel)
+    survey!: SurveyModel;
 }

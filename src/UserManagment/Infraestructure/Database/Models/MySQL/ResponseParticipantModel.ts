@@ -3,7 +3,7 @@ import { Participant } from './ParticipantModel';
 import { Question } from './QuestionModel';
 import { Option } from './OptionModel';
 
-@Entity()
+@Entity("responses")
 export class ResponseParticipant {
     @PrimaryGeneratedColumn('uuid')
     uuid!: string;

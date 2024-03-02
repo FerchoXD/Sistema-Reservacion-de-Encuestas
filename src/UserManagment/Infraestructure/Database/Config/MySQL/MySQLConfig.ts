@@ -1,7 +1,7 @@
 import { DatabaseConfig } from '../DatabaseConfig';
 import { AppDataSource } from './database';
 
-export class MySQLConfig implements DatabaseConfig {
+export class MySQLConfigORM implements DatabaseConfig {
   async initialize(): Promise<void> {
     AppDataSource.initialize().then(() => {
         console.log("Data Source MySQL has been initialized!");

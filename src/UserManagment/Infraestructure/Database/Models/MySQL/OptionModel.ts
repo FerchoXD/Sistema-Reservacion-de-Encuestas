@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Question } from './QuestionModel';
 
-@Entity()
+@Entity("options")
 export class Option {
     @PrimaryGeneratedColumn('uuid')
     uuid!: string;

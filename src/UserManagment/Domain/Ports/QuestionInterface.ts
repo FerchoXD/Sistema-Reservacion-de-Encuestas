@@ -1,5 +1,6 @@
+import { Question } from "../Entitys/Question";
 
 
 export interface QuestionInterface {
-    save():Promise<any>;
+    save(questions:Question[]):Promise<any>;
 }

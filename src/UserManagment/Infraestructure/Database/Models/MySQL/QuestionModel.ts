@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
-import { Survey } from './SurveyModel';
+import { SurveyModel } from './SurveyModel';
 import { Option } from './OptionModel';
 
-@Entity()
+@Entity("questions")
 export class Question {
     @PrimaryGeneratedColumn('uuid')
     uuid!: string;
@@ -16,8 +16,8 @@ export class Question {
     })
     type!: string;
 
-    @ManyToOne(() => Survey, survey => survey.questions)
-    survey!: Survey;
+    @ManyToOne(() => SurveyModel, survey => survey.questions)
+    survey!: SurveyModel;
 
     @OneToMany(() => Option, option => option.question)
     options!: Option[];

@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { Survey } from '../../Models/MySQL/SurveyModel';
+import { SurveyModel } from '../../Models/MySQL/SurveyModel';
 import { Award } from '../../Models/MySQL/AwardModel';
 import { Invitation } from '../../Models/MySQL/InvitationModel';
 import { Option } from '../../Models/MySQL/OptionModel';
@@ -17,7 +17,7 @@ export const AppDataSource = new DataSource({
     synchronize: process.env.DB_SYNCHRONIZE === 'true',
     logging: process.env.DB_LOGGING === 'true',
     entities: [
-        Survey, Award, Invitation, Option, Participant, Question, ResponseParticipant
+        SurveyModel, Award, Invitation, Option, Participant, Question, ResponseParticipant
     ],
     migrations: [
     ],

@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Option } from './Option';
 
-enum TypeQuestion {
+export enum TypeQuestion {
     OPEN = 'OPEN',
-    MULTIPLE_OPCION = 'MULTIPLE_OPTION',
-  }
+    MULTIPLE_OPTION = 'MULTIPLE_OPTION',
+}
 
 export class Question {
     public uuid:string;
@@ -16,7 +16,7 @@ export class Question {
         this.questionText = text;
         this.uuid = this.generateUuid();
         this.type = type;
-        if(this.type === TypeQuestion.MULTIPLE_OPCION){
+        if(this.type === TypeQuestion.MULTIPLE_OPTION){
             this.options = options;
         }
     }
