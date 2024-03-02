@@ -1,6 +1,4 @@
-import User from "../../Models/MySQL/User";
 import { EmailPort } from "./EmailPort";
-import nodemailer from 'nodemailer';
 import { transporter } from "./Mailer";
 
 

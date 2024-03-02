@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import sequelize from '../../../../Database/Config/MySQL/database';
-import { User } from "../../../Domain/Entitys/User";
+import { User } from '../../../../Domain/Entitys/User';
+import sequelize from '../../../../../Database/Config/MySQL/database';
 
 export class UserModel extends Model {
     public id!: string;

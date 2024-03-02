@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import 'dotenv/config';
 import express from 'express';
 import userRouter from "./UserManagment/Infraestructure/Routes/UserRoutes"
 

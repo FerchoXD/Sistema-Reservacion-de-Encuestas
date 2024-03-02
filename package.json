@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pre-start": "tsc --watch",
-    "start": "ts-node src/app.ts",
+    "start": "node --watch dist/app.js",
     "dev": "ts-node src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.1.1",

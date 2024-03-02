@@ -1,5 +1,4 @@
 import { DatabaseConfig } from "../../Database/Config/DatabaseConfig";
-import { MySQLConfig } from "../../Database/Config/MySQL/MySQLConfig";
 
 import { RegisterUserUseCase } from "../Application/UseCase/RegisterUserUseCase";
 import { RegisterUserController } from "./Controllers/RegisterUserController";
@@ -13,6 +12,7 @@ import { LoginUserUseCase } from "../Application/UseCase/LoginUserUseCase";
 import { LoginUserController } from "./Controllers/LoginUserController";
 import { LogoutUserUseCase } from "../Application/UseCase/LogoutUserUseCase";
 import { LogoutUserController } from "./Controllers/LogoutUserController";
+import { MySQLConfig } from "./Database/Config/MySQL/MySQLConfig";
 
 const mysqlRepository = new UserMySqlRepository();
 const mongoRepository = new UserMongoRepository();

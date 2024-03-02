@@ -4,7 +4,7 @@
    "port": 3306,
    "username": "root",
    "password": "",
-   "database": "crud-user-hexagonal-architecture",
+   "database": "surveys_hexagonal_architecture",
    "synchronize": true,
    "logging": false,
    "entities": [
@@ -17,4 +17,3 @@
       "src/subscriber/**/*.ts"
    ]
 }
-  
