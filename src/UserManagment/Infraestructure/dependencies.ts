@@ -1,49 +1,59 @@
-import { EmailService } from "./Services/Email/Email";
-import { AppDataSource } from "./Database/Config/MySQL/database";
-import { UserMySqlRepository } from "./Repositories/UserMySqlRepository";
+import "../../Database/Config/MySQL/Asociations";
+
+import { DatabaseConfig } from "../../Database/Config/DatabaseConfig";
+import { MySQLConfig } from "../../Database/Config/MySQL/MySQLConfig";
 import { RegisterUserUseCase } from "../Application/UseCase/RegisterUserUseCase";
 import { RegisterUserController } from "./Controllers/RegisterUserController";
-import { ActivateUserController } from "./Controllers/ActivateUserController";
+import { UserMySqlRepository } from "./Repositories/UserMySqlRepository";
+import { UserMongoRepository } from "./Repositories/UserMongoRepository";
+import { MongoConfig } from "../../Database/Config/MongoDb/MongoConfig";
+import { EmailService } from "./Services/Email/Email";
 import { ActivateUserUseCase } from "../Application/UseCase/ActivateUserUseCase";
+import { ActivateUserController } from "./Controllers/ActivateUserController";
 import { LoginUserUseCase } from "../Application/UseCase/LoginUserUseCase";
 import { LoginUserController } from "./Controllers/LoginUserController";
-import { LogoutUserController } from "./Controllers/LogoutUserController";
 import { LogoutUserUseCase } from "../Application/UseCase/LogoutUserUseCase";
-import { SurveyModel } from "./Database/Models/MySQL/SurveyModel";
-import { SurveyMySQLRepository } from "./Repositories/SurveyMySQLRespository";
+import { LogoutUserController } from "./Controllers/LogoutUserController";
 import { CreateSurveyAndAwardsUseCase } from "../Application/UseCase/CreateSurveyAndAwardsUseCase";
+import { SurveyMySQLRepository } from "./Repositories/SurveyMySQLRespository";
 import { CreateSurveyAndAwardsController } from "./Controllers/CreateSurveyAndAwardsController";
 
-export const initializeApp = async () => {
-    await AppDataSource.initialize();
-    console.log("Conexión a MySQL inicializada con éxito.");
+const mysqlRepository = new UserMySqlRepository();
+const mongoRepository = new UserMongoRepository();
 
-    // Configura aquí tus repositorios y servicios
-    const emailService = new EmailService();
-    const userMySqlRepository = new UserMySqlRepository;
-    const surveyMySQLRepository = AppDataSource.getRepository(SurveyModel);
+const surveyMySQLRepository = new SurveyMySQLRepository();
 
-    const currenRepository = userMySqlRepository;
+const currentRepository = mysqlRepository;
 
-    // Configura tus casos de uso pasando los repositorios y servicios necesarios
-    const registerUserUseCase = new RegisterUserUseCase(currenRepository);
-    const registerUserController = new RegisterUserController(registerUserUseCase, emailService);
+function getDatabaseConfig(currentRepository: any): DatabaseConfig {
+    if (currentRepository instanceof UserMySqlRepository) {
+      return new MySQLConfig();
+    }else if(currentRepository instanceof UserMongoRepository){
+        return new MongoConfig();
+    }
+    throw new Error('Unsupported repository type');
+  }
 
+const registerUserUseCase = new RegisterUserUseCase(currentRepository);
+const registerUserController = new RegisterUserController(registerUserUseCase, new EmailService());
 
-    const activateUserUseCase = new ActivateUserUseCase(currenRepository); // o userMongoRepository
-    const activateUserController = new ActivateUserController(activateUserUseCase);
+const activateUserUseCase = new ActivateUserUseCase(currentRepository);
+const activateUserController = new ActivateUserController(activateUserUseCase);
 
-    const loginUserUseCase = new LoginUserUseCase(currenRepository); // o userMongoRepository
-    const loginUserController = new LoginUserController(loginUserUseCase);
+const loginUserUseCase = new LoginUserUseCase(currentRepository);
+const loginUserController = new LoginUserController(loginUserUseCase);
 
-    const logoutUserUseCase = new LogoutUserUseCase(currenRepository); // o userMongoRepository
-    const logoutUserController = new LogoutUserController(logoutUserUseCase);
+const logoutUserUseCase = new LogoutUserUseCase(currentRepository);
+const logoutUserController = new LogoutUserController(logoutUserUseCase);
 
-    const createSurveyAndQuestionAndAwardsUseCase = new CreateSurveyAndAwardsUseCase(surveyMySQLRepository);
-    const createSurveyAndQuestionAndAwardsController = new CreateSurveyAndAwardsController(createSurveyAndQuestionAndAwardsUseCase);
+const createSurveyAndQuestionsAndAwardsUseCase = new CreateSurveyAndAwardsUseCase(surveyMySQLRepository);
+const createSurvetAndQuestionAndAwardsController = new CreateSurveyAndAwardsController(createSurveyAndQuestionsAndAwardsUseCase);
 
-    // Devuelve los controladores para ser usados en tus rutas
-    return {
-        registerUserController, activateUserController, loginUserController, logoutUserController, createSurveyAndQuestionAndAwardsController
-    };
-};
+const dbConfig = getDatabaseConfig(currentRepository);
+dbConfig.initialize().then(() => {
+  console.log('Database initialized.');
+});
+
+export { registerUserController, activateUserController, loginUserController, logoutUserController,
+         createSurvetAndQuestionAndAwardsController,
+}

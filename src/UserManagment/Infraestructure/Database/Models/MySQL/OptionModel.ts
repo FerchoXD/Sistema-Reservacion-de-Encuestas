@@ -1,14 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Question } from './QuestionModel';
+import { Model, DataTypes, UUIDV4 } from 'sequelize';
+import sequelize from '../../../../../Database/Config/MySQL/database';
 
-@Entity("options")
-export class Option {
-    @PrimaryGeneratedColumn('uuid')
-    uuid!: string;
+export class OptionModel extends Model {}
 
-    @Column()
-    optionText!: string;
-
-    @ManyToOne(() => Question, question => question.options)
-    question!: Question;
-}
+OptionModel.init({
+  uuid: { type: DataTypes.UUID, defaultValue: UUIDV4, primaryKey: true },
+  optionText: { type: DataTypes.STRING },
+  questionUuid: { type: DataTypes.UUID }
+}, { sequelize, modelName: 'option' });

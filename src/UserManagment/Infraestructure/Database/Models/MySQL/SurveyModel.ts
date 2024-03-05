@@ -1,17 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Question } from './QuestionModel';
+import { Model, DataTypes, UUIDV4 } from 'sequelize';
+import sequelize from '../../../../../Database/Config/MySQL/database';
 
-@Entity('surveys')
-export class SurveyModel {
-    @PrimaryGeneratedColumn('uuid')
-    uuid!: string;
+export class SurveyModel extends Model {}
 
-    @Column()
-    title!: string;
-
-    @Column()
-    description!: string;
-
-    @OneToMany(() => Question, question => question.survey)
-    questions!: Question[];
-}
+SurveyModel.init({
+  uuid: { type: DataTypes.UUID, defaultValue: UUIDV4, primaryKey: true },
+  title: { type: DataTypes.STRING },
+  description: { type: DataTypes.STRING }
+}, { sequelize, modelName: 'survey' });

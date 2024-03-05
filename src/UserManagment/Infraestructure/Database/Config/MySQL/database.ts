@@ -4,7 +4,7 @@ import { Award } from '../../Models/MySQL/AwardModel';
 import { Invitation } from '../../Models/MySQL/InvitationModel';
 import { Option } from '../../Models/MySQL/OptionModel';
 import { Participant } from '../../Models/MySQL/ParticipantModel';
-import { Question } from '../../Models/MySQL/QuestionModel';
+import { QuestionModel } from '../../Models/MySQL/QuestionModel';
 import { ResponseParticipant } from '../../Models/MySQL/ResponseParticipantModel';
 
 export const AppDataSource = new DataSource({
@@ -17,7 +17,7 @@ export const AppDataSource = new DataSource({
     synchronize: process.env.DB_SYNCHRONIZE === 'true',
     logging: process.env.DB_LOGGING === 'true',
     entities: [
-        SurveyModel, Award, Invitation, Option, Participant, Question, ResponseParticipant
+        SurveyModel, Award, Invitation, Option, Participant, QuestionModel, ResponseParticipant
     ],
     migrations: [
     ],

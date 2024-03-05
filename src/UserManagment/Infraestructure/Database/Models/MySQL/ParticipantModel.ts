@@ -1,13 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Model, DataTypes, UUIDV4 } from 'sequelize';
+import sequelize from '../../../../../Database/Config/MySQL/database';
 
-@Entity("participants")
-export class Participant {
-    @PrimaryGeneratedColumn('uuid')
-    uuid!: string;
+export class Participant extends Model {}
 
-    @Column()
-    name!: string;
-
-    @Column()
-    email!: string;
-}
+Participant.init({
+  uuid: { type: DataTypes.UUID, defaultValue: UUIDV4, primaryKey: true },
+  name: { type: DataTypes.STRING },
+  email: { type: DataTypes.STRING }
+}, { sequelize, modelName: 'participant' });

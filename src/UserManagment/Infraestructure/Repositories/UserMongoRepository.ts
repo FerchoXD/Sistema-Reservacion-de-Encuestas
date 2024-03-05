@@ -1,6 +1,6 @@
 import { User } from "../../Domain/Entitys/User";
 import { UserInterface } from "../../Domain/Ports/UserInterface";
-import UserModel from "../Models/MongoDB/User";
+import UserModel from "../Database/Models/MongoDB/User";
 import bcrypt from "bcrypt";
 import { JWTService } from "../../Application/JWT/JWTService";
 

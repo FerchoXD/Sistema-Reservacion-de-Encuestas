@@ -3,7 +3,7 @@ import { Option } from './Option';
 
 export enum TypeQuestion {
     OPEN = 'OPEN',
-    MULTIPLE_OPTION = 'MULTIPLE_OPTION',
+    MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
 }
 
 export class Question {
@@ -12,11 +12,11 @@ export class Question {
     public type:TypeQuestion;
     public options?: Option[];
 
-    constructor(text:string, type:TypeQuestion, options:Option[]){
+    constructor(text:string, type:TypeQuestion, options?:Option[]){
         this.questionText = text;
         this.uuid = this.generateUuid();
         this.type = type;
-        if(this.type === TypeQuestion.MULTIPLE_OPTION){
+        if(this.type === TypeQuestion.MULTIPLE_CHOICE){
             this.options = options;
         }
     }

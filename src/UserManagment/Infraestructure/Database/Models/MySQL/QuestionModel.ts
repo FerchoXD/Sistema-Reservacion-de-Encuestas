@@ -1,24 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
-import { SurveyModel } from './SurveyModel';
-import { Option } from './OptionModel';
+import { Model, DataTypes, UUIDV4 } from 'sequelize';
+import sequelize from '../../../../../Database/Config/MySQL/database';
 
-@Entity("questions")
-export class Question {
-    @PrimaryGeneratedColumn('uuid')
-    uuid!: string;
+export class QuestionModel extends Model {}
 
-    @Column()
-    questionText!: string;
-
-    @Column({
-        type: "enum",
-        enum: ["OPEN", "MULTIPLE_OPTION"],
-    })
-    type!: string;
-
-    @ManyToOne(() => SurveyModel, survey => survey.questions)
-    survey!: SurveyModel;
-
-    @OneToMany(() => Option, option => option.question)
-    options!: Option[];
-}
+QuestionModel.init({
+  uuid: { type: DataTypes.UUID, defaultValue: UUIDV4, primaryKey: true },
+  questionText: { type: DataTypes.STRING },
+  type: { type: DataTypes.ENUM, values: ['OPEN', 'MULTIPLE_CHOICE'] },
+  surveyUuid: { type: DataTypes.UUID }
+}, { sequelize, modelName: 'question' });

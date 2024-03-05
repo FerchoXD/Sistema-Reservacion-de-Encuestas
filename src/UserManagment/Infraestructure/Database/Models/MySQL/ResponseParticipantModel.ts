@@ -1,22 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Participant } from './ParticipantModel';
-import { Question } from './QuestionModel';
-import { Option } from './OptionModel';
+import { Model, DataTypes, UUIDV4 } from 'sequelize';
+import sequelize from '../../../../../Database/Config/MySQL/database';
 
-@Entity("responses")
-export class ResponseParticipant {
-    @PrimaryGeneratedColumn('uuid')
-    uuid!: string;
+export class ResponseParticipant extends Model {}
 
-    @ManyToOne(() => Participant)
-    participant!: Participant;
-
-    @ManyToOne(() => Question)
-    question!: Question;
-
-    @Column({ nullable: true })
-    textAnswer?: string;
-
-    @ManyToOne(() => Option, { nullable: true })
-    option?: Option;
-}
+ResponseParticipant.init({
+  uuid: { type: DataTypes.UUID, defaultValue: UUIDV4, primaryKey: true },
+  textAnswer: { type: DataTypes.STRING, allowNull: true },
+  optionUuid: { type: DataTypes.UUID, allowNull: true }
+}, { sequelize, modelName: 'response' });

@@ -1,21 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Participant } from './ParticipantModel';
-import { SurveyModel } from './SurveyModel';
+import { Model, DataTypes, UUIDV4 } from 'sequelize';
+import sequelize from '../../../../../Database/Config/MySQL/database';
 
-@Entity("invitations")
-export class Invitation {
-    @PrimaryGeneratedColumn('uuid')
-    uuid!: string;
+export class Invitation extends Model {}
 
-    @Column({
-        type: "enum",
-        enum: ["SEND", "ACCEPTED", "COMPLETED"],
-    })
-    state!: string;
+Invitation.init({
+  uuid: { type: DataTypes.UUID, defaultValue: UUIDV4, primaryKey: true },
+  state: { type: DataTypes.ENUM, values: ['SEND', 'ACCEPTED', 'COMPLETED'] }
+}, { sequelize, modelName: 'invitation' });
 
-    @ManyToOne(() => Participant)
-    participant!: Participant;
-
-    @ManyToOne(() => SurveyModel)
-    survey!: SurveyModel;
-}
