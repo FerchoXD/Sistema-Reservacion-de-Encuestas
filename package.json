@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "pre-start": "tsc --watch",
-    "start": "node --watch dist/app.js",
-    "dev": "ts-node src/app.ts",
+    "dev": "tsc-watch --onSuccess \"node dist/app.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -36,6 +34,8 @@
     "@types/uuid": "^9.0.8",
     "nodemon": "^3.0.3",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsc-watch": "^6.0.4",
     "typescript": "^5.3.3"
   }
 }

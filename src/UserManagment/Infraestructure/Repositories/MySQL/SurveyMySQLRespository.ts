@@ -1,10 +1,10 @@
-import { Award } from "../../Domain/Entitys/Award";
-import { Survey } from "../../Domain/Entitys/Survey";
-import { ICreateSurveyAll } from "../../Domain/Ports/ICreateSurveyAll";
-import { AwardModel } from "../Database/Models/MySQL/AwardModel";
-import { OptionModel } from "../Database/Models/MySQL/OptionModel";
-import { QuestionModel } from "../Database/Models/MySQL/QuestionModel";
-import { SurveyModel } from "../Database/Models/MySQL/SurveyModel";
+import { Award } from "../../../Domain/Entitys/Award";
+import { Survey } from "../../../Domain/Entitys/Survey";
+import { ICreateSurveyAll } from "../../../Domain/Ports/ICreateSurveyAll";
+import { AwardModel } from "../../Database/Models/MySQL/AwardModel";
+import { OptionModel } from "../../Database/Models/MySQL/OptionModel";
+import { QuestionModel } from "../../Database/Models/MySQL/QuestionModel";
+import { SurveyModel } from "../../Database/Models/MySQL/SurveyModel";
 
 
 export class SurveyMySQLRepository implements ICreateSurveyAll {
