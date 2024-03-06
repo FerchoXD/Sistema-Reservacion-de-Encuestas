@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "pre-start": "tsc --watch",
-    "start": "nodemon dist/app.js",
+    "dev": "tsc-watch --onSuccess \"node dist/app.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "express": "^4.18.2",
+    "express": "4.18.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.1.1",
     "mysql2": "^3.9.1",
@@ -27,8 +26,18 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/nodemailer": "^6.4.14",
     "@types/uuid": "^9.0.8",
+    "bcrypt": "^5.1.1",
+    "express": "4.18.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.1.1",
+    "mysql2": "^3.9.1",
+    "nodemailer": "^6.9.9",
     "nodemon": "^3.0.3",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "sequelize": "^6.36.0",
+    "ts-node": "10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsc-watch": "^6.0.4", 
+    "typescript": "^5.3.3",
+    "uuid": "^9.0.1"
   }
 }

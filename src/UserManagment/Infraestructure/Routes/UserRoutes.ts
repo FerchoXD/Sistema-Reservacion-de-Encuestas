@@ -3,7 +3,7 @@ import { registerUserController, activateUserController, loginUserController, lo
 
 const router = Router();
 
-router.post('/', registerUserController.run.bind(registerUserController));
+router.post('/register', registerUserController.run.bind(registerUserController));
 
 router.put('/:token/activate', activateUserController.run.bind(activateUserController));
 

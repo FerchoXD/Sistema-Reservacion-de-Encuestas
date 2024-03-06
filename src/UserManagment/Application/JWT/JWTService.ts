@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 
 export class JWTService {
-    static generateToken(id:string, email:string): string {
-        const payload = { userId: id, email: email };
+    static generateToken(id:string, name:string): string | null {
+        const payload = { userId: id, name: name };
         return jwt.sign(payload, 'miClaveSecretaSuperSegura123!$'!, { expiresIn: '1h' });
     }
 

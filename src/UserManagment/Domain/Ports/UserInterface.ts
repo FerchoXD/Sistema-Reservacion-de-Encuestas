@@ -1,8 +1,10 @@
-import { User } from "../Entitys/User";
+import { CredentialInterface } from './CredentialInterface';
+import { User } from "../Entities/User";
+import { ContactInterface } from './ContactInterface';
 
 export interface UserInterface {
     save(user: User): Promise<User|any>;
-    update(token:string): Promise<User|any>;
-    login(email:string, password:string):Promise<User|any>;
-    logout(email:string):Promise<any|void>;
+    register(Contact:ContactInterface,Credential:CredentialInterface): Promise<User|any>;
+    login(name:string, password:string):Promise<User|any>;
+    logout(name:string):Promise<any|void>;
 }

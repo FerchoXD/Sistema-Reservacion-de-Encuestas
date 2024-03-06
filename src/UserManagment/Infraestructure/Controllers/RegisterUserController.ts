@@ -1,33 +1,17 @@
 import { Request, Response } from 'express';
 import { RegisterUserUseCase } from "../../Application/UseCase/RegisterUserUseCase";
-import { EmailService } from '../Services/Email/Email';
 
 export class RegisterUserController {
-    public emailService:EmailService;
 
-    constructor(readonly registerUserUseCase:RegisterUserUseCase, emailService:EmailService){
-        this.emailService = emailService;
+    constructor(readonly registerUserUseCase:RegisterUserUseCase){
     }
 
     async run(req:Request, res:Response){
-        if(!this.isNumberValid(req.body.cellphone)){
+        
+        if(!this.nameIsValid(req.body.name)){
             return res.status(400).json({
                 error: "Bad Request",
-                message: "El número telefonico debe de tener una longitud de 10 caracteres."
-            });
-        }
-
-        if(!this.emailIsValid(req.body.email)){
-            return res.status(400).json({
-                error: "Bad Request",
-                message: "Estructura del email incorrecta."
-            });
-        }
-
-        if(!this.nameIsValid(req.body.name + " " + req.body.lastname)){
-            return res.status(400).json({
-                error: "Bad Request",
-                message: "No tienes un nombre valido."
+                message: "El nombre no puede contener números ni caracteres especiales."
             });
         }
 
@@ -38,25 +22,13 @@ export class RegisterUserController {
             });
         }
 
-        const user = await this.registerUserUseCase.run(req.body.name, req.body.lastname, req.body.cellphone, req.body.email, req.body.password);
+        const user = await this.registerUserUseCase.run(req.body.name, req.body.password);
         if(user.error === true){
             return res.status(500).json(user)
         }
-        await this.emailService.run(user)
+        
 
         return res.status(200).json(user);
-    }
-
-    private isNumberValid(number:string): boolean{
-        if(number.length != 10){
-            return false;
-        }
-        return true;
-    }
-
-    private emailIsValid(email: string): boolean {
-        const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return regex.test(email.toLowerCase());
     }
     
     private nameIsValid(name: string): boolean {

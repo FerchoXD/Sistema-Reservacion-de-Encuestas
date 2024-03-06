@@ -1,155 +1,125 @@
-import { User } from "../../Domain/Entitys/User";
+import { CredentialInterface } from './../../Domain/Ports/CredentialInterface';
+import { ContactInterface } from './../../Domain/Ports/ContactInterface';
+import { User} from "../../Domain/Entities/User";
 import { UserInterface } from "../../Domain/Ports/UserInterface";
 import { UserModel } from "../Models/MySQL/User";
 import bcrypt from "bcrypt";
 import { JWTService } from "../../Application/JWT/JWTService";
+import { v4 as uuidv4 } from 'uuid';
+import { Op } from 'sequelize';
+
 
 export class UserMySqlRepository implements UserInterface {
+    
     async save(user: User): Promise<any> {
         try {
-
+            //const hashedPassword = bcrypt.hashSync(user.credential.password, 10);
+            console.log("metodo save: ",user.credential.password);
+            console.log("compare : ",bcrypt.compareSync("Fernando$1235",user.credential.password));
             const userResponse = await UserModel.create({
                 id: user.uuid,
                 name: user.contact.name,
-                lastname: user.contact.lastname,
-                cellphone: user.contact.cellphone,
-                email: user.credential.email,
-                password: user.credential.password,
-                token: user.status.token,
-                activationToken: user.status.activationToken,
-                verifiedAt: null
+                password: user.credential.password, // Asumiendo que deseas hashear la contraseña
+                token: user.credential.token
             });
 
             return userResponse.dataValues;
         } catch (error) {
-            if (error instanceof Error && 'errors' in error && Array.isArray(error.errors) && error.errors.length > 0) {
-                return {
-                    message: error.errors[0].message,
-                    error: true
-                };
-            } else {
-                return {
-                    message: 'Ocurrió un error al guardar el usuario.',
-                    error: true
-                };
-            }
+            return this.handleError(error);
         }
     }
 
-    async update(token: string): Promise<any> {
+    async register(contact: ContactInterface, credential: CredentialInterface): Promise<any> {
         try {
-            const user = await UserModel.findOne({
-                where: {
-                    activationToken: token,
-                    verifiedAt: null,
-                }
+            console.log("metodo register: ",credential.password);
+            
+            const newUser = await UserModel.create({
+                id: this.generateUuid(),
+                name: contact.name,
+                password: credential.password
             });
-    
-            if (!user) {
-                return {
-                    status: 404,
-                    message: 'Usuario no encontrado o ya activado.'
-                };
-            }
-    
-            user.verifiedAt = new Date();
-            await user.save();
-    
-            return {
-                status: 200,
-                response: user
-            };
+
+            return this.createResponse(201, 'Usuario registrado con éxito.', { id: newUser.id });
         } catch (error) {
-            console.error(error);
-            return {
-                status: 500,
-                message: 'Hubo un problema al intentar la actualización del recurso.'
-            };
+            return this.handleError(error);
         }
     }
 
-    async login(email: string, password: string): Promise<any> {
+
+    async login(name: string, password: string): Promise<any> {
         try {
-            const user = await UserModel.findOne({ where: { email: email } });
-    
+            if (!name || name.trim() === '' || name === undefined){
+                return this.createResponse(400, 'El nombre de usuario es requerido.');
+            }
+
+            console.log('Login:', name, password);
+
+            const user = await UserModel.findOne({ where: { name } });
+
             if (!user) {
-                return {
-                    status: 404,
-                    message: 'Usuario no encontrado.'
-                };
+                return this.createResponse(404, 'Usuario no encontrado.');
             }
-    
-            if (!user.verifiedAt) {
-                return {
-                    status: 403,
-                    message: 'La cuenta no está activada.'
-                };
-            }
-    
+            
+            // Continúa con la verificación de la contraseña si el usuario no es null
             const passwordIsValid = bcrypt.compareSync(password, user.password);
-            if (!passwordIsValid) {
-                return {
-                    status: 401,
-                    message: 'Contraseña incorrecta.'
-                };
+            console.log('User:', user);
+            console.log('Pass db:',user.password);
+            console.log('pass rcibida:',password)
+
+
+            const passhash = bcrypt.hashSync("fercho123", 10);
+            console.log('passhash:', passhash);
+            console.log('passhash:', passhash);
+            const passhash2 = "fercho123";
+            const passhash3 = bcrypt.compareSync(passhash2, passhash);
+            console.log('passhash3:', passhash3);
+
+            if (!passwordIsValid) { 
+                return this.createResponse(401, 'Contraseña incorrecta.');
             }
     
-            const token = JWTService.generateToken(user.id, user.email);
+            // Genera un token si la contraseña es válida
+            const token = JWTService.generateToken(user.id, user.name);
             user.token = token;
             await user.save();
-            return {
-                status: 200,
-                message: 'Inicio de sesión exitoso.',
-                token: token
-            };
+            return this.createResponse(200, 'Inicio de sesión exitoso.', { token });
     
         } catch (error) {
-            console.error('Error al iniciar sesión:', error);
-            return {
-                status: 500,
-                message: 'Error interno del servidor.'
-            };
+            return this.handleError(error);
         }
     }
 
-    async logout(email: string): Promise<any | void> {
-        try{
-            const user = await UserModel.findOne({ where: { email: email } });
-    
+    async logout(name: string): Promise<any> {
+        try {
+            const user = await UserModel.findOne({ where: { name: name, token: { [Op.ne]: null } } });
             if (!user) {
-                return {
-                    status: 404,
-                    message: 'Usuario no encontrado.'
-                };
+                return this.createResponse(404, 'Usuario no encontrado.');
             }
     
-            if (!user.verifiedAt) {
-                return {
-                    status: 403,
-                    message: 'La cuenta no está activada.'
-                };
-            }
-
-            if (!user.token) {
-                return { 
-                    status: 403,
-                    message: 'No has iniciado sesión.' 
-                };
-            }
-    
-            user.token = null;
+            user.token;
             await user.save();
-
-            return {
-                status: 200,
-                message: 'Cierre de sesión exitoso.',
-            };
-        }catch(error){
-            console.error('Error al cerrar sesión:', error);
-            return {
-                status: 500,
-                message: 'Error interno del servidor.'
-            };
+    
+            return this.createResponse(200, 'Cierre de sesión exitoso.');
+        } catch (error) {
+            return this.handleError(error);
         }
+    }
+
+    private createResponse(status: number, message: string, data?: any) {
+        return { status, message, ...data };
+    }
+
+    // Método auxiliar para manejar errores
+    private handleError(error: any) {
+        if (error instanceof Error && 'errors' in error && Array.isArray(error.errors)) {
+            return this.createResponse(400, error.errors[0].message);
+        } else {
+            console.error('Error en la base de datos:', error);
+            return this.createResponse(500, 'Error interno del servidor.');
+        }
+    }
+
+    private generateUuid(): string {
+        return uuidv4();
     }
 }

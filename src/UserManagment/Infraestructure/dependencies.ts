@@ -6,7 +6,6 @@ import { RegisterUserController } from "./Controllers/RegisterUserController";
 import { UserMySqlRepository } from "./Repositories/UserMySqlRepository";
 import { UserMongoRepository } from "./Repositories/UserMongoRepository";
 import { MongoConfig } from "../../Database/Config/MongoDb/MongoConfig";
-import { EmailService } from "./Services/Email/Email";
 import { ActivateUserUseCase } from "../Application/UseCase/ActivateUserUseCase";
 import { ActivateUserController } from "./Controllers/ActivateUserController";
 import { LoginUserUseCase } from "../Application/UseCase/LoginUserUseCase";
@@ -29,7 +28,7 @@ function getDatabaseConfig(currentRepository: any): DatabaseConfig {
   }
 
 const registerUserUseCase = new RegisterUserUseCase(currentRepository);
-const registerUserController = new RegisterUserController(registerUserUseCase, new EmailService());
+const registerUserController = new RegisterUserController(registerUserUseCase);
 
 const activateUserUseCase = new ActivateUserUseCase(currentRepository);
 const activateUserController = new ActivateUserController(activateUserUseCase);

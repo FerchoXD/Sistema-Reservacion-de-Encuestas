@@ -1,22 +1,21 @@
-import { User } from "../../Domain/Entitys/User";
+import { User } from "../../Domain/Entities/User";
 import { UserInterface } from "../../Domain/Ports/UserInterface";
 import UserModel from "../Models/MongoDB/User";
 import bcrypt from "bcrypt";
 import { JWTService } from "../../Application/JWT/JWTService";
+import { CredentialInterface } from './../../Domain/Ports/CredentialInterface';
+import { ContactInterface } from './../../Domain/Ports/ContactInterface';
+import { v4 as uuidv4 } from 'uuid';
 
 export class UserMongoRepository implements UserInterface {
     async save(user: User): Promise<any> {
         try {
+            const hashedPassword = bcrypt.hashSync(user.credential.password, 10);
             const newUser = {
-                id: user.uuid, 
+                uuid: user.uuid,  // Usando 'uuid' en lugar de 'id' para seguir las convenciones de MongoDB
                 name: user.contact.name,
-                lastName: user.contact.lastname, 
-                cellphone: user.contact.cellphone,
-                email: user.credential.email,
-                password: user.credential.password,
-                token: user.status.token,
-                activationToken: user.status.activationToken,
-                verifiedAt: null,
+                password: hashedPassword,
+                // Omitimos el token al guardar un usuario nuevo.
             };
             const userResponse = await UserModel.create(newUser);
             return userResponse;
@@ -28,50 +27,41 @@ export class UserMongoRepository implements UserInterface {
         }
     }
 
-    async update(token: string): Promise<any> {
-        try{
-            const user = await UserModel.findOne({
-                activationToken: token,
-                verifiedAt: { $eq: null },
+    async register(contact: ContactInterface, credential: CredentialInterface): Promise<any> {
+        try {
+            const hashedPassword = bcrypt.hashSync(credential.password, 10);
+            
+            const newUser = new UserModel({
+                uuid: this.generateUuid(), // asumiendo que tienes un método generateUuid
+                name: contact.name,
+                password: hashedPassword,
+                // token: debería ser null inicialmente o no incluirse hasta que el usuario inicie sesión
             });
-    
-            if (!user) {
-                return{ 
-                    status: 404,
-                    message: 'Usuario no encontrado o ya activado.' 
-                };
-            }
-    
-            user.verifiedAt = new Date();
-            await user.save();
+
+            const userResponse = await newUser.save();
             return {
-                status: 200,
-                response: user
+                status: 201,
+                message: 'Usuario registrado con éxito.',
+                user: userResponse
             };
-        }catch(error){
-            console.error(error);
-            return{ 
+        } catch (error) {
+            return {
                 status: 500,
-                message: 'Hubo un problema al intentar la actualización del recurso.' 
+                message: 'Ocurrió un error al guardar el usuario.',
+                error: true
             };
         }
     }
 
-    async login(email:string, password:string): Promise<any> {
+
+    async login(name:string, password:string): Promise<any> {
         try{
-            const user = await UserModel.findOne({ email: email });
+            const user = await UserModel.findOne({ name: name });
 
             if (!user) {
                 return { 
                     status: 404,
                     message: 'Usuario no encontrado.' 
-                };
-            }
-
-            if (!user.verifiedAt) {
-                return { 
-                    status: 403,
-                    message: 'La cuenta no está activada.' 
                 };
             }
 
@@ -83,7 +73,7 @@ export class UserMongoRepository implements UserInterface {
                 };
             }
             
-            const token = JWTService.generateToken(user.id, user.email);
+            const token = JWTService.generateToken(user.id, user.name);
             user.token = token;
             await user.save();
             return {
@@ -101,21 +91,14 @@ export class UserMongoRepository implements UserInterface {
         }
     }
 
-    async logout(email: string): Promise<any | void> {
+    async logout(name: string): Promise<any | void> {
         try{
-            const user = await UserModel.findOne({ email: email });
+            const user = await UserModel.findOne({ name: name });
 
             if (!user) {
                 return { 
                     status: 404,
                     message: 'Usuario no encontrado.' 
-                };
-            }
-
-            if (!user.verifiedAt) {
-                return { 
-                    status: 403,
-                    message: 'La cuenta no está activada.' 
                 };
             }
 
@@ -140,5 +123,9 @@ export class UserMongoRepository implements UserInterface {
                 message: 'Error interno del servidor.' 
             };
         }
+    }
+
+    private generateUuid(): string {
+        return uuidv4();
     }
 }
