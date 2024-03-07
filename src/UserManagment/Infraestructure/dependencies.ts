@@ -13,6 +13,8 @@ import { LogoutUserController } from "./Controllers/LogoutUserController";
 import { CreateSurveyAndAwardsUseCase } from "../Application/UseCase/CreateSurveyAndAwardsUseCase";
 import { CreateSurveyAndAwardsController } from "./Controllers/CreateSurveyAndAwardsController";
 import { getSurveyRepository, getUserRepository } from "./Repositories/GetRepositories";
+import { ActivateSurveyUseCase } from "../Application/UseCase/ActivateSurveyUseCase";
+import { ActivateSurveyController } from "./Controllers/ActivateSurveyController";
 
 export type DatabaseType = 'MySQL' | 'MongoDB';
 const dbType: DatabaseType = 'MongoDB';
@@ -45,6 +47,9 @@ const logoutUserController = new LogoutUserController(logoutUserUseCase);
 const createSurveyAndQuestionsAndAwardsUseCase = new CreateSurveyAndAwardsUseCase(surveyRepository);
 const createSurvetAndQuestionAndAwardsController = new CreateSurveyAndAwardsController(createSurveyAndQuestionsAndAwardsUseCase);
 
+const activateSurveyUseCase = new ActivateSurveyUseCase(surveyRepository);
+const activateSurveyController = new ActivateSurveyController(activateSurveyUseCase);
+
 const dbConfig = getDatabaseConfig();
 dbConfig.initialize().then(() => {
   console.log('Database initialized.')
@@ -52,5 +57,5 @@ dbConfig.initialize().then(() => {
 
 export {
   registerUserController, activateUserController, loginUserController, logoutUserController,
-  createSurvetAndQuestionAndAwardsController,
+  createSurvetAndQuestionAndAwardsController, activateSurveyController
 }

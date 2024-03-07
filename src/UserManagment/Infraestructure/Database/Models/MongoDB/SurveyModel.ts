@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const OptionSchema = new Schema({
     uuid: { type: String, required:true, unique:true },
     optionText: String,
+    value: Number
 });
   
 const QuestionSchema = new Schema({
@@ -16,6 +17,7 @@ const SurveySchema = new Schema({
     uuid: { type: String, required:true, unique:true },
     title: String,
     description: String,
+    status: { type: String, enum: ['ENABLED', 'DISABLED'] },
     questions: [QuestionSchema],
 });
 

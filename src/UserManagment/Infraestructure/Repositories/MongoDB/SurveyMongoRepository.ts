@@ -1,11 +1,11 @@
 import { Award } from "../../../Domain/Entitys/Award";
 import { TypeQuestion } from "../../../Domain/Entitys/Question";
 import { Survey } from "../../../Domain/Entitys/Survey";
-import { ICreateSurveyAll } from "../../../Domain/Ports/ICreateSurveyAll";
+import { ISurveyAll } from "../../../Domain/Ports/ISurveyAll";
 import AwardModel from "../../Database/Models/MongoDB/AwardModel";
 import SurveyModel from "../../Database/Models/MongoDB/SurveyModel";
 
-export class SurveyMongoRepository implements ICreateSurveyAll {
+export class SurveyMongoRepository implements ISurveyAll {
     async saveSurveyWithAll(survey: Survey, awards: Award[]): Promise<any> {
         try {
             const questions: { uuid: string; questionText: string; type: TypeQuestion; options: any[] | null; }[] = [];
@@ -27,9 +27,9 @@ export class SurveyMongoRepository implements ICreateSurveyAll {
                 uuid: survey.uuid,
                 title: survey.title,
                 description: survey.description,
+                status: survey.status,
                 questions: questions,
             }
-            console.log(awards);
             const surveyResponse = await SurveyModel.create(newSurvey);
             const arrAwardsDataResponse = await Promise.all(
                 awards.map(async (award) => {
@@ -65,6 +65,33 @@ export class SurveyMongoRepository implements ICreateSurveyAll {
                     error
                 };
             }
+        }
+    }
+
+    async updateStatus(uuid: string): Promise<Survey|any> {
+        try {
+            const survey = await SurveyModel.findOne({ uuid: uuid });
+    
+            if (!survey) {
+                return {
+                    status: 404,
+                    message: 'Encuesta no encontrada'
+                };
+            }
+    
+            survey.status = 'ENABLED';
+            await survey.save();
+    
+            return {
+                status: 200,
+                survey
+            }
+        } catch (error) {
+            return {
+                status: 500,
+                message: "Error al activar la encuesta",
+                error: error
+            };
         }
     }
 }

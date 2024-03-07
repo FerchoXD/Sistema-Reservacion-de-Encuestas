@@ -15,8 +15,8 @@ export class CreateSurveyAndAwardsController {
             let optionsResponses = [];
 
             if (question.type !== 'OPEN' && question.options && question.options.length > 0) {
-                optionsResponses = question.options.map((opt: string)=> {
-                    return new Option(opt);
+                optionsResponses = question.options.map((opt: any)=> {
+                    return new Option(opt.text, opt.value);
                 });
             }
             const questionData = new Question(question.text, question.type, optionsResponses);

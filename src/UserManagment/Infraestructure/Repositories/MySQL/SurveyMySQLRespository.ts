@@ -1,19 +1,21 @@
+import { where } from "sequelize";
 import { Award } from "../../../Domain/Entitys/Award";
 import { Survey } from "../../../Domain/Entitys/Survey";
-import { ICreateSurveyAll } from "../../../Domain/Ports/ICreateSurveyAll";
+import { ISurveyAll } from "../../../Domain/Ports/ISurveyAll";
 import { AwardModel } from "../../Database/Models/MySQL/AwardModel";
 import { OptionModel } from "../../Database/Models/MySQL/OptionModel";
 import { QuestionModel } from "../../Database/Models/MySQL/QuestionModel";
 import { SurveyModel } from "../../Database/Models/MySQL/SurveyModel";
 
 
-export class SurveyMySQLRepository implements ICreateSurveyAll {
+export class SurveyMySQLRepository implements ISurveyAll {
     async saveSurveyWithAll(survey: Survey, awards:Award[]): Promise<any> {
         try {
             const surveyResponse = await SurveyModel.create({
                 uuid: survey.uuid,
                 title: survey.title,
-                description: survey.description
+                status: 'DISABLED',
+                description: survey.description,
             });
     
             const questionsPromises = survey.questions.map(async (question) => {
@@ -31,6 +33,7 @@ export class SurveyMySQLRepository implements ICreateSurveyAll {
                             OptionModel.create({
                                 uuid: option.uuid,
                                 optionText: option.optionText,
+                                value: option.value,
                                 questionUuid: question.uuid
                             })
                         )
@@ -58,7 +61,7 @@ export class SurveyMySQLRepository implements ICreateSurveyAll {
             const questionsWithOptions = await Promise.all(questionsPromises);
 
             return {
-                status: 200,
+                status: 201,
                 message: "Se guardaron correctamente los datos",
                 surveyResponse,
                 questionsWithOptions,
@@ -73,4 +76,31 @@ export class SurveyMySQLRepository implements ICreateSurveyAll {
         }
     }
 
+    async updateStatus(uuid: string): Promise<Survey|any> {
+        try {
+            const survey = await SurveyModel.findByPk(uuid);
+
+            if (!survey) {
+                return { 
+                    status: 404,
+                    message: 'Encuesta no encontrada' 
+                };
+            }
+
+            survey.status = 'ENABLED';
+            await survey.save();
+
+            return {
+                status: 200,
+                survey
+            }
+        } catch (error) {
+            return {
+                status: 500,
+                message: "Error al activar la encuesta",
+                error: error
+            }
+        }
+
+    }
 }

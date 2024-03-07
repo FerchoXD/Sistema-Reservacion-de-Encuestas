@@ -1,10 +1,10 @@
 import { Award } from "../../Domain/Entitys/Award";
 import { Survey } from "../../Domain/Entitys/Survey";
-import { ICreateSurveyAll } from "../../Domain/Ports/ICreateSurveyAll";
+import { ISurveyAll } from "../../Domain/Ports/ISurveyAll";
 
 export class CreateSurveyAndAwardsUseCase {
     constructor(
-        readonly surveyRepository: ICreateSurveyAll,
+        readonly surveyRepository: ISurveyAll,
     ) {}
 
     async run(survey:Survey, awards:Award[]):Promise<Survey|any> {
