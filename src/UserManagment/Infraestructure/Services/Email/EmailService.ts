@@ -1,8 +1,8 @@
-import { EmailPort } from "./EmailPort";
+import { IEmailService } from "./IEmailService";
 import { transporter } from "./Mailer";
 
 
-export class EmailService implements EmailPort {
+export class EmailService implements IEmailService {
     async run(user: any): Promise<void> {
         const opcionesCorreo = {
             from: '213497@ids.upchiapas.edu.mx', // Debe ser el mismo email usado en la autenticación del transporter

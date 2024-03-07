@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { RegisterUserUseCase } from "../../Application/UseCase/RegisterUserUseCase";
-import { EmailService } from '../Services/Email/Email';
+import { EmailService } from '../Services/Email/EmailService';
 
 export class RegisterUserController {
     public emailService:EmailService;

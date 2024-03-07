@@ -94,4 +94,8 @@ export class SurveyMongoRepository implements ISurveyAll {
             };
         }
     }
+
+    async sendSurveyInvitations(uuid: string): Promise<any> {
+        throw new Error("Method not implemented.");
+    }
 }

@@ -1,5 +1,5 @@
 import { User } from "../../../Domain/Entitys/User";
 
-export interface EmailPort {
+export interface IEmailService {
     run(user:User):Promise<void>;
 }

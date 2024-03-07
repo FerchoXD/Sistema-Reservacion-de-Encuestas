@@ -7,7 +7,6 @@ import { OptionModel } from "../../Database/Models/MySQL/OptionModel";
 import { QuestionModel } from "../../Database/Models/MySQL/QuestionModel";
 import { SurveyModel } from "../../Database/Models/MySQL/SurveyModel";
 
-
 export class SurveyMySQLRepository implements ISurveyAll {
     async saveSurveyWithAll(survey: Survey, awards:Award[]): Promise<any> {
         try {
@@ -101,6 +100,9 @@ export class SurveyMySQLRepository implements ISurveyAll {
                 error: error
             }
         }
+    }
 
+    async sendSurveyInvitations(uuid: string): Promise<any> {
+        throw new Error("Method not implemented.");
     }
 }

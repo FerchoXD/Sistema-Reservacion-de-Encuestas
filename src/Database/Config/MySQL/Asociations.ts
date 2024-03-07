@@ -1,7 +1,7 @@
 import { AwardModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/AwardModel";
 import { Invitation } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/InvitationModel";
 import { OptionModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/OptionModel";
-import { Participant } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/ParticipantModel";
+import { ParticipantModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/ParticipantModel";
 import { QuestionModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/QuestionModel";
 import { ResponseParticipant } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/ResponseParticipantModel";
 import { SurveyModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/SurveyModel";
@@ -18,9 +18,9 @@ OptionModel.belongsTo(QuestionModel, { foreignKey: 'questionUuid' });
 
 // Relaciones para Invitation
 // Un participante puede recibir muchas invitaciones. Relación Uno a Muchos.
-Participant.hasMany(Invitation, { foreignKey: 'participantUuid', as: 'invitations' });
+ParticipantModel.hasMany(Invitation, { foreignKey: 'participantUuid', as: 'invitations' });
 // Una invitación está asociada a un único participante.
-Invitation.belongsTo(Participant, { foreignKey: 'participantUuid' });
+Invitation.belongsTo(ParticipantModel, { foreignKey: 'participantUuid' });
 
 // Una encuesta puede estar asociada a muchas invitaciones. Relación Uno a Muchos.
 SurveyModel.hasMany(Invitation, { foreignKey: 'surveyUuid', as: 'invitations' });
@@ -29,9 +29,9 @@ Invitation.belongsTo(SurveyModel, { foreignKey: 'surveyUuid' });
 
 // Relaciones para ResponseParticipant
 // Un participante puede tener muchas respuestas. Relación Uno a Muchos.
-Participant.hasMany(ResponseParticipant, { foreignKey: 'participantUuid', as: 'responses' });
+ParticipantModel.hasMany(ResponseParticipant, { foreignKey: 'participantUuid', as: 'responses' });
 // Una respuesta está asociada a un único participante.
-ResponseParticipant.belongsTo(Participant, { foreignKey: 'participantUuid' });
+ResponseParticipant.belongsTo(ParticipantModel, { foreignKey: 'participantUuid' });
 
 // Una pregunta puede recibir muchas respuestas. Relación Uno a Muchos.
 QuestionModel.hasMany(ResponseParticipant, { foreignKey: 'questionUuid', as: 'responses' });

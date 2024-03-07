@@ -1,7 +1,6 @@
 import { Survey } from "../../Domain/Entitys/Survey";
 import { ISurveyAll } from "../../Domain/Ports/ISurveyAll";
 
-
 export class ActivateSurveyUseCase {
     constructor(readonly surveyRepository: ISurveyAll){}
 
