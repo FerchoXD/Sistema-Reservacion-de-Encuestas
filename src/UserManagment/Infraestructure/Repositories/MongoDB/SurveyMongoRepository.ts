@@ -1,4 +1,5 @@
 import { Award } from "../../../Domain/Entities/Award";
+import { Invitation, InvitationState } from "../../../Domain/Entities/Invitation";
 import { Participant } from "../../../Domain/Entities/Participant";
 import { TypeQuestion } from "../../../Domain/Entities/Question";
 import { Survey } from "../../../Domain/Entities/Survey";
@@ -7,6 +8,7 @@ import AwardModel from "../../Database/Models/MongoDB/AwardModel";
 import SurveyModel from "../../Database/Models/MongoDB/SurveyModel";
 import { EmailService } from "../../Services/Email/EmailService";
 import { ParticipantMySQLRepository } from "../MySQL/ParticipantMySQLRepository";
+import { InvitationMongoRepository } from "./InvitationMongoRepository";
 
 export class SurveyMongoRepository implements ISurveyAll {
     async saveSurveyWithAll(survey: Survey, awards: Award[]): Promise<any> {
@@ -98,23 +100,33 @@ export class SurveyMongoRepository implements ISurveyAll {
         }
     }
 
-    async sendSurveyInvitations(uuid: string, emailService:EmailService, participantRepository:ParticipantMySQLRepository): Promise<any> {
+    async sendSurveyInvitations(uuid: string, emailService:EmailService, 
+        participantRepository:ParticipantMySQLRepository, invitationRepository:InvitationMongoRepository): Promise<any> {
         try {
             const participants = await participantRepository.getAll();
             if (participants.length === 0) {
                 return { status: 404, message: 'No hay participantes para enviar invitaciones.' };
             }
             const survey = await SurveyModel.findOne({uuid:uuid, status:'ENABLED'});
-            if (!survey) {
+            if (!survey || !survey.title || !survey.description) {
                 return { status: 404, message: 'Encuesta no encontrada o no activada' };
             }
+            const surveyData = new Survey(survey.title, survey.description, []);
+            surveyData.uuid = survey.uuid;
+            const participantsData:Participant[] = [];
+            const invitationsData:Invitation[] = [];
             const sendEmailPromises = participants.map((participant:Participant) => {
                 if(!survey.title || !survey) return {status: 207, message: 'La encuesta no esta terminada'};
-                return emailService.sendInvitation(participant.email, survey.title, 'aca ira el link');
+                let participantData = new Participant(participant.name, participant.email);
+                participantData.setUuid(participant.uuid);
+                participantsData.push(participantData);
+                const invitation = new Invitation(InvitationState.Send, participantData, surveyData);
+                invitationsData.push(invitation)
+                return emailService.sendInvitation(participant.email, survey.title, `http://127.0.0.1:3000/api/v1/surveys/accept-invitation?token=${invitation.token}`);
             });
-
             await Promise.all(sendEmailPromises);
-
+            console.log(surveyData);
+            await invitationRepository.saveInvitations(invitationsData, participantsData, surveyData.uuid);
             return { status: 200, message: 'Invitaciones enviadas con éxito.' };
         } catch (error) {
             return {

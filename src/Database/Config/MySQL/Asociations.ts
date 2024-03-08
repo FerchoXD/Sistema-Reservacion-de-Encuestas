@@ -1,5 +1,5 @@
 import { AwardModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/AwardModel";
-import { Invitation } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/InvitationModel";
+import { InvitationModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/InvitationModel";
 import { OptionModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/OptionModel";
 import { ParticipantModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/ParticipantModel";
 import { QuestionModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/QuestionModel";
@@ -18,14 +18,14 @@ OptionModel.belongsTo(QuestionModel, { foreignKey: 'questionUuid' });
 
 // Relaciones para Invitation
 // Un participante puede recibir muchas invitaciones. Relación Uno a Muchos.
-ParticipantModel.hasMany(Invitation, { foreignKey: 'participantUuid', as: 'invitations' });
+ParticipantModel.hasMany(InvitationModel, { foreignKey: 'participantUuid', as: 'invitations' });
 // Una invitación está asociada a un único participante.
-Invitation.belongsTo(ParticipantModel, { foreignKey: 'participantUuid' });
+InvitationModel.belongsTo(ParticipantModel, { foreignKey: 'participantUuid' });
 
 // Una encuesta puede estar asociada a muchas invitaciones. Relación Uno a Muchos.
-SurveyModel.hasMany(Invitation, { foreignKey: 'surveyUuid', as: 'invitations' });
+SurveyModel.hasMany(InvitationModel, { foreignKey: 'surveyUuid', as: 'invitations' });
 // Una invitación está asociada a una única encuesta.
-Invitation.belongsTo(SurveyModel, { foreignKey: 'surveyUuid' });
+InvitationModel.belongsTo(SurveyModel, { foreignKey: 'surveyUuid' });
 
 // Relaciones para ResponseParticipant
 // Un participante puede tener muchas respuestas. Relación Uno a Muchos.

@@ -33,7 +33,7 @@ export class ParticipantMySQLRepository implements IParticipant{
                 const name = participant.dataValues.name;
                 const email = participant.dataValues.email;
                 const participantEntity = new Participant(name, email);
-                participantEntity.setUuid = participant.dataValues.uuid;
+                participantEntity.setUuid(participant.dataValues.uuid);
                 participantsEntity.push(participantEntity);
             })
             return participantsEntity;

@@ -12,7 +12,7 @@ import { LogoutUserUseCase } from "../Application/UseCase/LogoutUserUseCase";
 import { LogoutUserController } from "./Controllers/LogoutUserController";
 import { CreateSurveyAndAwardsUseCase } from "../Application/UseCase/CreateSurveyAndAwardsUseCase";
 import { CreateSurveyAndAwardsController } from "./Controllers/CreateSurveyAndAwardsController";
-import { getParticipantRepository, getSurveyRepository, getUserRepository } from "./Repositories/GetRepositories";
+import { getInvitationRepository, getParticipantRepository, getSurveyRepository, getUserRepository } from "./Repositories/GetRepositories";
 import { ActivateSurveyUseCase } from "../Application/UseCase/ActivateSurveyUseCase";
 import { ActivateSurveyController } from "./Controllers/ActivateSurveyController";
 import { RegisterParticipantUseCase } from "../Application/UseCase/RegisterParticipantUseCase";
@@ -26,6 +26,7 @@ const dbType: DatabaseType = 'MongoDB';
 const userRepository = getUserRepository(dbType);
 const surveyRepository = getSurveyRepository(dbType);
 const participantRepository = getParticipantRepository(dbType);
+const invitationRepository = getInvitationRepository(dbType);
 
 
 function getDatabaseConfig(): DatabaseConfig {
@@ -60,7 +61,7 @@ const activateSurveyController = new ActivateSurveyController(activateSurveyUseC
 const registerParticipantUseCase = new RegisterParticipantUseCase(participantRepository);
 const registerParticipantController = new RegisterParticipantController(registerParticipantUseCase);
 
-const sendSurveyInvitationsUseCase = new SendSurveyInvitationsUseCase(surveyRepository, emailService, participantRepository);
+const sendSurveyInvitationsUseCase = new SendSurveyInvitationsUseCase(surveyRepository, emailService, participantRepository, invitationRepository);
 const sendSurveyInvitationsController = new SendSurveyInvitationsController(sendSurveyInvitationsUseCase);
 
 const dbConfig = getDatabaseConfig();
