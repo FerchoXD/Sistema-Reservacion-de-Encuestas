@@ -1,4 +1,4 @@
-import { User } from "../../../Domain/Entitys/User";
+import { User } from "../../../Domain/Entities/User";
 import { UserInterface } from "../../../Domain/Ports/UserInterface";
 import UserModel from "../../Database/Models/MongoDB/User";
 import bcrypt from "bcrypt";

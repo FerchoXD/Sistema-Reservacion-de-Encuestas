@@ -1,10 +1,9 @@
-import { Participant } from "../../../Domain/Entitys/Participant";
+import { Participant } from "../../../Domain/Entities/Participant";
 import { IParticipant } from "../../../Domain/Ports/IParticipant";
 import { ParticipantModel } from "../../Database/Models/MySQL/ParticipantModel";
 
 
 export class ParticipantMySQLRepository implements IParticipant{
-
     async register(participant: Participant): Promise<Participant|any> {
         try {
             const participantResponse = await ParticipantModel.create({
@@ -21,6 +20,27 @@ export class ParticipantMySQLRepository implements IParticipant{
             return {
                 status: 500,
                 message: "Error al crear la encuesta completa",
+                error: error
+            }
+        }
+    }
+
+    async getAll(): Promise<Participant[]|any> {
+        try {
+            const participantsEntity:Participant[] = [];
+            const participants = await ParticipantModel.findAll();
+            participants.map((participant) => {
+                const name = participant.dataValues.name;
+                const email = participant.dataValues.email;
+                const participantEntity = new Participant(name, email);
+                participantEntity.setUuid = participant.dataValues.uuid;
+                participantsEntity.push(participantEntity);
+            })
+            return participantsEntity;
+        } catch (error) {
+            return {
+                status: false,
+                message: "Error al obtener los participantes",
                 error: error
             }
         }

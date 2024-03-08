@@ -1,4 +1,4 @@
-import { Participant } from "../../../Domain/Entitys/Participant";
+import { Participant } from "../../../Domain/Entities/Participant";
 import { IParticipant } from "../../../Domain/Ports/IParticipant";
 import ParticipantModel from "../../Database/Models/MongoDB/ParticipantModel";
 
@@ -24,7 +24,32 @@ export class ParticipantMongoRepository implements IParticipant{
                 error: error
             }
         }
+    }
 
-
+    async getAll(): Promise<Participant[]|any> {
+        try {
+            const participantsEntity:Participant[] = [];
+            const participants = await ParticipantModel.find({});
+            participants.map((participant) => {
+                if(!participant.name || !participant.email || !participant.uuid){
+                    return {
+                        status: false,
+                        message: "Error al obtener los participantes por falta de datos",
+                    }
+                }
+                const name = participant.name;
+                const email = participant.email;
+                const participantEntity = new Participant(name, email);
+                participantEntity.uuid = participant.uuid;
+                participantsEntity.push(participantEntity);
+            })
+            return participantsEntity;
+        } catch (error) {
+            return {
+                status: false,
+                message: "Error al obtener los participantes",
+                error: error
+            }
+        }
     }
 }

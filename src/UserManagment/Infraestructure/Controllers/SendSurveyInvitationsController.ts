@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { SendSurveyInvitationsUseCase } from "../../Application/UseCase/SendSurveyInvitationsUseCase";
-import { Survey } from "../../Domain/Entitys/Survey";
+import { Survey } from "../../Domain/Entities/Survey";
 
 export class SendSurveyInvitationsController {
     constructor(readonly sendSurveyInvitationsController:SendSurveyInvitationsUseCase){}

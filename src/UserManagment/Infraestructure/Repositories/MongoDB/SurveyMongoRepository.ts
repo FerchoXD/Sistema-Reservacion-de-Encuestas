@@ -1,9 +1,12 @@
-import { Award } from "../../../Domain/Entitys/Award";
-import { TypeQuestion } from "../../../Domain/Entitys/Question";
-import { Survey } from "../../../Domain/Entitys/Survey";
+import { Award } from "../../../Domain/Entities/Award";
+import { Participant } from "../../../Domain/Entities/Participant";
+import { TypeQuestion } from "../../../Domain/Entities/Question";
+import { Survey } from "../../../Domain/Entities/Survey";
 import { ISurveyAll } from "../../../Domain/Ports/ISurveyAll";
 import AwardModel from "../../Database/Models/MongoDB/AwardModel";
 import SurveyModel from "../../Database/Models/MongoDB/SurveyModel";
+import { EmailService } from "../../Services/Email/EmailService";
+import { ParticipantMySQLRepository } from "../MySQL/ParticipantMySQLRepository";
 
 export class SurveyMongoRepository implements ISurveyAll {
     async saveSurveyWithAll(survey: Survey, awards: Award[]): Promise<any> {
@@ -95,7 +98,30 @@ export class SurveyMongoRepository implements ISurveyAll {
         }
     }
 
-    async sendSurveyInvitations(uuid: string): Promise<any> {
-        throw new Error("Method not implemented.");
+    async sendSurveyInvitations(uuid: string, emailService:EmailService, participantRepository:ParticipantMySQLRepository): Promise<any> {
+        try {
+            const participants = await participantRepository.getAll();
+            if (participants.length === 0) {
+                return { status: 404, message: 'No hay participantes para enviar invitaciones.' };
+            }
+            const survey = await SurveyModel.findOne({uuid:uuid, status:'ENABLED'});
+            if (!survey) {
+                return { status: 404, message: 'Encuesta no encontrada o no activada' };
+            }
+            const sendEmailPromises = participants.map((participant:Participant) => {
+                if(!survey.title || !survey) return {status: 207, message: 'La encuesta no esta terminada'};
+                return emailService.sendInvitation(participant.email, survey.title, 'aca ira el link');
+            });
+
+            await Promise.all(sendEmailPromises);
+
+            return { status: 200, message: 'Invitaciones enviadas con éxito.' };
+        } catch (error) {
+            return {
+                status: 500,
+                error: error,
+                message: 'No se pudieron enviar todas las invitaciones con éxito.'
+            };
+        }
     }
 }

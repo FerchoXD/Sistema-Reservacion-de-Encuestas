@@ -11,6 +11,10 @@ export class Participant {
         this.email = email;
     }
 
+    setUuid(uuid:string):void{
+        this.uuid = uuid;
+    }
+
     generateUuid():string {
         return uuidv4();
     }

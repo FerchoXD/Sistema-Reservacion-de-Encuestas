@@ -1,7 +1,7 @@
-import { Contact } from "../../Domain/Entitys/Contact";
-import { Credential } from "../../Domain/Entitys/Credential";
-import { Status } from "../../Domain/Entitys/Status";
-import { User } from "../../Domain/Entitys/User";
+import { Contact } from "../../Domain/Entities/Contact";
+import { Credential } from "../../Domain/Entities/Credential";
+import { Status } from "../../Domain/Entities/Status";
+import { User } from "../../Domain/Entities/User";
 import { UserInterface } from "../../Domain/Ports/UserInterface"
 
 export class RegisterUserUseCase {

@@ -1,5 +1,5 @@
-import { Award } from "../../Domain/Entitys/Award";
-import { Survey } from "../../Domain/Entitys/Survey";
+import { Award } from "../../Domain/Entities/Award";
+import { Survey } from "../../Domain/Entities/Survey";
 import { ISurveyAll } from "../../Domain/Ports/ISurveyAll";
 
 export class CreateSurveyAndAwardsUseCase {

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { RegisterParticipantUseCase } from "../../Application/UseCase/RegisterParticipantUseCase";
-import { Participant } from "../../Domain/Entitys/Participant";
+import { Participant } from "../../Domain/Entities/Participant";
 
 
 export class RegisterParticipantController {

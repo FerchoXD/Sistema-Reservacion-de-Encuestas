@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { CreateSurveyAndAwardsUseCase } from "../../Application/UseCase/CreateSurveyAndAwardsUseCase";
-import { Survey } from "../../Domain/Entitys/Survey";
-import { Question } from "../../Domain/Entitys/Question";
-import { Option } from "../../Domain/Entitys/Option";
-import { Award } from "../../Domain/Entitys/Award";
+import { Survey } from "../../Domain/Entities/Survey";
+import { Question } from "../../Domain/Entities/Question";
+import { Option } from "../../Domain/Entities/Option";
+import { Award } from "../../Domain/Entities/Award";
 
 export class CreateSurveyAndAwardsController {
     constructor(readonly createSurveyAndAwardsUseCase: CreateSurveyAndAwardsUseCase) {}

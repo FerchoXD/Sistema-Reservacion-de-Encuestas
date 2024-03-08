@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import { User } from '../../../../Domain/Entitys/User';
+import { User } from '../../../../Domain/Entities/User';
 import sequelize from '../../../../../Database/Config/MySQL/database';
 
 export class UserModel extends Model {

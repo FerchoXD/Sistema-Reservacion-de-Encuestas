@@ -21,7 +21,7 @@ import { SendSurveyInvitationsUseCase } from "../Application/UseCase/SendSurveyI
 import { SendSurveyInvitationsController } from "./Controllers/SendSurveyInvitationsController";
 
 export type DatabaseType = 'MySQL' | 'MongoDB';
-const dbType: DatabaseType = 'MySQL';
+const dbType: DatabaseType = 'MongoDB';
 
 const userRepository = getUserRepository(dbType);
 const surveyRepository = getSurveyRepository(dbType);
@@ -37,8 +37,10 @@ function getDatabaseConfig(): DatabaseConfig {
   throw new Error('Unsupported repository type');
 }
 
+const emailService = new EmailService();
+
 const registerUserUseCase = new RegisterUserUseCase(userRepository);
-const registerUserController = new RegisterUserController(registerUserUseCase, new EmailService());
+const registerUserController = new RegisterUserController(registerUserUseCase, emailService);
 
 const activateUserUseCase = new ActivateUserUseCase(userRepository);
 const activateUserController = new ActivateUserController(activateUserUseCase);
@@ -58,7 +60,7 @@ const activateSurveyController = new ActivateSurveyController(activateSurveyUseC
 const registerParticipantUseCase = new RegisterParticipantUseCase(participantRepository);
 const registerParticipantController = new RegisterParticipantController(registerParticipantUseCase);
 
-const sendSurveyInvitationsUseCase = new SendSurveyInvitationsUseCase(surveyRepository);
+const sendSurveyInvitationsUseCase = new SendSurveyInvitationsUseCase(surveyRepository, emailService, participantRepository);
 const sendSurveyInvitationsController = new SendSurveyInvitationsController(sendSurveyInvitationsUseCase);
 
 const dbConfig = getDatabaseConfig();

@@ -20,4 +20,21 @@ export class EmailService implements IEmailService {
         }    
     }
 
+    async sendInvitation(email: string, surveyTitle: string, invitationLink: string): Promise<any> {
+        try {
+            const mailOptions = {
+                from: '213497@ids.upchiapas.edu.mx',
+                to: email,
+                subject: `Invitación a participar en la encuesta: ${surveyTitle}`,
+                html: `<p>Haz clic en el siguiente enlace para participar en la encuesta: <a href="${invitationLink}">${invitationLink}</a></p>`
+            };
+            await transporter.sendMail(mailOptions);
+            return { success:true };
+        } catch (error) {
+            return {
+                status: false,
+                error: error
+            };
+        }
+    }
 }

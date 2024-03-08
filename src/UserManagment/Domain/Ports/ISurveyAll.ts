@@ -1,8 +1,10 @@
-import { Award } from "../Entitys/Award";
-import { Survey } from "../Entitys/Survey";
+import { EmailService } from "../../Infraestructure/Services/Email/EmailService";
+import { Award } from "../Entities/Award";
+import { Survey } from "../Entities/Survey";
+import { IParticipant } from "./IParticipant";
 
 export interface ISurveyAll {
     saveSurveyWithAll(survey:Survey, awards:Award[]):Promise<any>;
     updateStatus(uuid:string):Promise<Survey|any>;
-    sendSurveyInvitations(uuid:string):Promise<Survey|any>;
+    sendSurveyInvitations(uuid:string, emailService:EmailService, participantRepository:IParticipant):Promise<Survey|any>;
 }

@@ -1,4 +1,4 @@
-import { Survey } from "../../Domain/Entitys/Survey";
+import { Survey } from "../../Domain/Entities/Survey";
 import { ISurveyAll } from "../../Domain/Ports/ISurveyAll";
 
 export class ActivateSurveyUseCase {

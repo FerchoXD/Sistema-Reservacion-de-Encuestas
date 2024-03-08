@@ -1,4 +1,4 @@
-import { Participant } from "../../Domain/Entitys/Participant";
+import { Participant } from "../../Domain/Entities/Participant";
 import { IParticipant } from "../../Domain/Ports/IParticipant";
 
 

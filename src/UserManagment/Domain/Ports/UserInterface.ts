@@ -1,4 +1,4 @@
-import { User } from "../Entitys/User";
+import { User } from "../Entities/User";
 
 export interface UserInterface {
     save(user: User): Promise<User|any>;
