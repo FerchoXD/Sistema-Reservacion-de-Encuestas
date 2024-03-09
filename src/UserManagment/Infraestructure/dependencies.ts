@@ -19,9 +19,11 @@ import { RegisterParticipantUseCase } from "../Application/UseCase/RegisterParti
 import { RegisterParticipantController } from "./Controllers/RegisterParticipantController";
 import { SendSurveyInvitationsUseCase } from "../Application/UseCase/SendSurveyInvitationsUseCase";
 import { SendSurveyInvitationsController } from "./Controllers/SendSurveyInvitationsController";
+import { AcceptInvitationUseCase } from "../Application/UseCase/AcceptInvitationUseCase";
+import { AcceptInvitationController } from "./Controllers/AcceptInvitationController";
 
 export type DatabaseType = 'MySQL' | 'MongoDB';
-const dbType: DatabaseType = 'MongoDB';
+const dbType: DatabaseType = 'MySQL';
 
 const userRepository = getUserRepository(dbType);
 const surveyRepository = getSurveyRepository(dbType);
@@ -64,6 +66,9 @@ const registerParticipantController = new RegisterParticipantController(register
 const sendSurveyInvitationsUseCase = new SendSurveyInvitationsUseCase(surveyRepository, emailService, participantRepository, invitationRepository);
 const sendSurveyInvitationsController = new SendSurveyInvitationsController(sendSurveyInvitationsUseCase);
 
+const acceptInvitationUseCase = new AcceptInvitationUseCase(invitationRepository);
+const acceptInvitationController = new AcceptInvitationController(acceptInvitationUseCase);
+
 const dbConfig = getDatabaseConfig();
 dbConfig.initialize().then(() => {
   console.log('Database initialized.')
@@ -71,5 +76,5 @@ dbConfig.initialize().then(() => {
 
 export {
   registerUserController, activateUserController, loginUserController, logoutUserController, registerParticipantController,
-  createSurvetAndQuestionAndAwardsController, activateSurveyController, sendSurveyInvitationsController
+  createSurvetAndQuestionAndAwardsController, activateSurveyController, sendSurveyInvitationsController, acceptInvitationController
 }

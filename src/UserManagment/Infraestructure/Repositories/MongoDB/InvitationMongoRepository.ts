@@ -22,6 +22,40 @@ export class InvitationMongoRepository implements IInvitation {
         } catch (error) {
             console.error(error);
         }
-        
+    }
+
+    async updateStateInvitation(token: string) {
+        try {
+            const invitation = await InvitationModel.findOne({ token: token });
+            if (!invitation) {
+                return {
+                    status: 404,
+                    message: 'La invitación no ha sido encontrada'
+                }
+            }
+            
+            if (invitation.state == 'ACCEPTED' || invitation.state == 'COMPLETED') {
+                return {
+                    status: 204,
+                    invitation,
+                    message: 'La invitación ya habia sido aceptada o completada'
+                }
+            }
+    
+            invitation.state = 'ACCEPTED';
+            invitation.token = 'CONSUMED';
+            await invitation.save();
+            return {
+                status: 200,
+                invitation,
+                message: 'La invitación ya se ha aceptado'
+            }
+        } catch (error) {
+            return {
+                status: 500,
+                message: "Error al actualizar el estado de la invitacion",
+                error: error
+            }
+        }
     }
 }

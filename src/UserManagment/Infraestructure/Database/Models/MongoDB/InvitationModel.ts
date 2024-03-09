@@ -4,7 +4,7 @@ const InvitationSchema = new Schema({
     uuid: { type: String, require:true, unique:true },
     participantUuid:  { type: String, required:true, unique:true },
     surveyUuid:  { type: String, required:true, unique:true },
-    status: { type: String, enum: ['SENT', 'ACCEPTED', 'COMPLETED'] },
+    state: { type: String, enum: ['SEND', 'ACCEPTED', 'COMPLETED'] },
     token: { type:String, require:true, unique:true }
   });
   

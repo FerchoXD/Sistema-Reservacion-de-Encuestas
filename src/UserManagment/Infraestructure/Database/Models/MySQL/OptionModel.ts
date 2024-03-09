@@ -1,7 +1,12 @@
 import { Model, DataTypes, UUIDV4 } from 'sequelize';
 import sequelize from '../../../../../Database/Config/MySQL/database';
 
-export class OptionModel extends Model {}
+export class OptionModel extends Model {
+    public uuid!: string;
+    public optionText!: string;
+    public value!: number;
+    public questionUuid!: string;
+}
 
 OptionModel.init({
   uuid: { type: DataTypes.UUID, defaultValue: UUIDV4, primaryKey: true },

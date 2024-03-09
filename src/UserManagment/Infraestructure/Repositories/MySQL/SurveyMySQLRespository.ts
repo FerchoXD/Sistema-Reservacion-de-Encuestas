@@ -131,7 +131,7 @@ export class SurveyMySQLRepository implements ISurveyAll {
                 participantsData.push(participantData);
                 const invitation = new Invitation(InvitationState.Send, participantData, surveyData);
                 invitationsData.push(invitation)
-                return emailService.sendInvitation(participant.email, survey.title, `http://127.0.0.1:3000/api/v1/surveys/accept-invitation?token=${invitation.token}`);
+                return emailService.sendInvitation(participant.email, survey.title, `http://127.0.0.1:3000/api/v1/surveys/accept-invitation/${invitation.token}`);
             });
             await Promise.all(sendEmailPromises);
             await invitationRepository.saveInvitations(invitationsData, participantsData, surveyData.uuid);
