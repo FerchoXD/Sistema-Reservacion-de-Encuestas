@@ -3,7 +3,7 @@ import { InvitationModel } from "../../../UserManagment/Infraestructure/Database
 import { OptionModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/OptionModel";
 import { ParticipantModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/ParticipantModel";
 import { QuestionModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/QuestionModel";
-import { ResponseParticipant } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/ResponseParticipantModel";
+import { ResponseParticipantModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/ResponseParticipantModel";
 import { SurveyModel } from "../../../UserManagment/Infraestructure/Database/Models/MySQL/SurveyModel";
 
 // Relaciones SurveyModel - QuestionModel
@@ -29,19 +29,19 @@ InvitationModel.belongsTo(SurveyModel, { foreignKey: 'surveyUuid' });
 
 // Relaciones para ResponseParticipant
 // Un participante puede tener muchas respuestas. Relación Uno a Muchos.
-ParticipantModel.hasMany(ResponseParticipant, { foreignKey: 'participantUuid', as: 'responses' });
+ParticipantModel.hasMany(ResponseParticipantModel, { foreignKey: 'participantUuid', as: 'responses' });
 // Una respuesta está asociada a un único participante.
-ResponseParticipant.belongsTo(ParticipantModel, { foreignKey: 'participantUuid' });
+ResponseParticipantModel.belongsTo(ParticipantModel, { foreignKey: 'participantUuid' });
 
 // Una pregunta puede recibir muchas respuestas. Relación Uno a Muchos.
-QuestionModel.hasMany(ResponseParticipant, { foreignKey: 'questionUuid', as: 'responses' });
+QuestionModel.hasMany(ResponseParticipantModel, { foreignKey: 'questionUuid', as: 'responses' });
 // Una respuesta está asociada a una única pregunta.
-ResponseParticipant.belongsTo(QuestionModel, { foreignKey: 'questionUuid' });
+ResponseParticipantModel.belongsTo(QuestionModel, { foreignKey: 'questionUuid' });
 
 // Una opción puede ser seleccionada en muchas respuestas. Relación Uno a Muchos.
-OptionModel.hasMany(ResponseParticipant, { foreignKey: 'optionUuid', as: 'responses' });
+OptionModel.hasMany(ResponseParticipantModel, { foreignKey: 'optionUuid', as: 'responses' });
 // Una respuesta selecciona una única opción (o ninguna, si es nula).
-ResponseParticipant.belongsTo(OptionModel, { foreignKey: 'optionUuid', as: 'selectedOption' });
+ResponseParticipantModel.belongsTo(OptionModel, { foreignKey: 'optionUuid', as: 'selectedOption' });
 
 // Relación SurveyModel - Award (Uno a Muchos)
 // Una encuesta puede tener asociados muchos premios. Relación Uno a Muchos.

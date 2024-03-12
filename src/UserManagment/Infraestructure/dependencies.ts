@@ -12,7 +12,7 @@ import { LogoutUserUseCase } from "../Application/UseCase/LogoutUserUseCase";
 import { LogoutUserController } from "./Controllers/LogoutUserController";
 import { CreateSurveyAndAwardsUseCase } from "../Application/UseCase/CreateSurveyAndAwardsUseCase";
 import { CreateSurveyAndAwardsController } from "./Controllers/CreateSurveyAndAwardsController";
-import { getInvitationRepository, getParticipantRepository, getSurveyRepository, getUserRepository } from "./Repositories/GetRepositories";
+import { getInvitationRepository, getOptionRepository, getParticipantRepository, getQuestionRepository, getResponseRepository, getSurveyRepository, getUserRepository } from "./Repositories/GetRepositories";
 import { ActivateSurveyUseCase } from "../Application/UseCase/ActivateSurveyUseCase";
 import { ActivateSurveyController } from "./Controllers/ActivateSurveyController";
 import { RegisterParticipantUseCase } from "../Application/UseCase/RegisterParticipantUseCase";
@@ -21,14 +21,19 @@ import { SendSurveyInvitationsUseCase } from "../Application/UseCase/SendSurveyI
 import { SendSurveyInvitationsController } from "./Controllers/SendSurveyInvitationsController";
 import { AcceptInvitationUseCase } from "../Application/UseCase/AcceptInvitationUseCase";
 import { AcceptInvitationController } from "./Controllers/AcceptInvitationController";
+import { CheckSurveyInvitationAndStatusUseCase } from "../Application/UseCase/CheckSurveyInvitationAndStatusUseCase";
+import { CheckSurveyInvitationAndStatusController } from "./Controllers/CheckSurveyInvitationAndStatusController";
 
 export type DatabaseType = 'MySQL' | 'MongoDB';
-const dbType: DatabaseType = 'MySQL';
+const dbType: DatabaseType = 'MongoDB';
 
 const userRepository = getUserRepository(dbType);
 const surveyRepository = getSurveyRepository(dbType);
 const participantRepository = getParticipantRepository(dbType);
 const invitationRepository = getInvitationRepository(dbType);
+const questionRepository = getQuestionRepository(dbType)
+const optionRepository = getOptionRepository(dbType);
+const responseRepository = getResponseRepository(dbType);
 
 
 function getDatabaseConfig(): DatabaseConfig {
@@ -69,6 +74,10 @@ const sendSurveyInvitationsController = new SendSurveyInvitationsController(send
 const acceptInvitationUseCase = new AcceptInvitationUseCase(invitationRepository);
 const acceptInvitationController = new AcceptInvitationController(acceptInvitationUseCase);
 
+const checkStatusInvitationUseCase = new CheckSurveyInvitationAndStatusUseCase(surveyRepository, 
+  invitationRepository, questionRepository, optionRepository, responseRepository);
+const checkSurveyInvitationAndStatusController = new CheckSurveyInvitationAndStatusController(checkStatusInvitationUseCase);
+
 const dbConfig = getDatabaseConfig();
 dbConfig.initialize().then(() => {
   console.log('Database initialized.')
@@ -76,5 +85,6 @@ dbConfig.initialize().then(() => {
 
 export {
   registerUserController, activateUserController, loginUserController, logoutUserController, registerParticipantController,
-  createSurvetAndQuestionAndAwardsController, activateSurveyController, sendSurveyInvitationsController, acceptInvitationController
+  createSurvetAndQuestionAndAwardsController, activateSurveyController, sendSurveyInvitationsController, acceptInvitationController,
+  checkSurveyInvitationAndStatusController
 }

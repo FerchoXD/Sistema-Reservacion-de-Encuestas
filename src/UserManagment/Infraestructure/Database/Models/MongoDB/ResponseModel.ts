@@ -1,11 +1,12 @@
 import mongoose, { Schema } from "mongoose";
 
 const ParticipantResponseSchema = new Schema({
-    participantId: { type: Schema.Types.ObjectId, ref: 'Participant' },
-    surveyId: { type: Schema.Types.ObjectId, ref: 'Survey' },
-    questionId: { type: Schema.Types.ObjectId, ref: 'Question' },
+    uuid:String,
+    participantUuid: String,
+    optionUuid: String,
+    questionUuid: String,
     answer: String,
-    selectedOptionId: { type: Schema.Types.ObjectId },
+    score: Number,
 });
 
 const ResponseModel = mongoose.model('Responses', ParticipantResponseSchema);

@@ -6,7 +6,7 @@ export class SendSurveyInvitationsController {
     constructor(readonly sendSurveyInvitationsController:SendSurveyInvitationsUseCase){}
 
     async run(req:Request, res:Response):Promise<Survey|any>{
-        const invitation = await this.sendSurveyInvitationsController.run(req.params.survetUuid);
+        const invitation = await this.sendSurveyInvitationsController.run(req.params.surveyUuid);
         return res.status(invitation.status).json(invitation);
     }
 }

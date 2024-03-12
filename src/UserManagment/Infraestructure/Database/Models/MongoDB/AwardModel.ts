@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 const AwardSchema = new Schema({
-    id: { type: String, require:true, unique:true },
+    uuid: { type: String, require:true, unique:true },
     productName: String,
     productDescription: String,
     stock: Number,
