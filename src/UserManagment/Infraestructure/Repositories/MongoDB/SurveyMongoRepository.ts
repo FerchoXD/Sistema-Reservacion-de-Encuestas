@@ -11,6 +11,15 @@ import { ParticipantMySQLRepository } from "../MySQL/ParticipantMySQLRepository"
 import { InvitationMongoRepository } from "./InvitationMongoRepository";
 
 export class SurveyMongoRepository implements ISurveyAll {
+    async checkStateSurvey(uuid: string): Promise<any> {
+        try {
+            const survey = await SurveyModel.findOne({ uuid:uuid }, 'uuid');
+            if(!survey || survey.status == 'DISABLED') return false;
+            return survey.uuid;
+        } catch (error) {
+            return false;
+        }
+    }
     async saveSurveyWithAll(survey: Survey, awards: Award[]): Promise<any> {
         try {
             const questions: { uuid: string; questionText: string; type: TypeQuestion; options: any[] | null; }[] = [];

@@ -10,9 +10,17 @@ import { ParticipantMySQLRepository } from "./ParticipantMySQLRepository";
 import { Participant } from "../../../Domain/Entities/Participant";
 import { Invitation, InvitationState } from "../../../Domain/Entities/Invitation";
 import { InvitationMySQLRepository } from "./InvitationMySQLRepository";
-import { InvitationModel } from "../../Database/Models/MySQL/InvitationModel";
 
 export class SurveyMySQLRepository implements ISurveyAll {
+    async checkStateSurvey(uuid: string): Promise<any> {
+        try {
+            const survey = await SurveyModel.findByPk(uuid);
+            if(!survey || survey.status == 'DISABLED') return false;
+            return survey.dataValues.uuid;
+        } catch (error) {
+            return false;
+        }
+    }
     async saveSurveyWithAll(survey: Survey, awards:Award[]): Promise<any> {
         try {
             const surveyResponse = await SurveyModel.create({
@@ -83,7 +91,7 @@ export class SurveyMySQLRepository implements ISurveyAll {
     async updateStatus(uuid: string): Promise<Survey|any> {
         try {
             const survey = await SurveyModel.findByPk(uuid);
-
+            console.log(survey?.dataValues);
             if (!survey) {
                 return { 
                     status: 404,
@@ -93,10 +101,9 @@ export class SurveyMySQLRepository implements ISurveyAll {
 
             survey.status = 'ENABLED';
             await survey.save();
-
             return {
                 status: 200,
-                survey
+                survey: survey
             }
         } catch (error) {
             return {

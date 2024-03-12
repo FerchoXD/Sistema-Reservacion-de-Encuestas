@@ -5,6 +5,41 @@ import { InvitationModel } from "../../Database/Models/MySQL/InvitationModel";
 
 
 export class InvitationMySQLRepository implements IInvitation {
+    async updateInvitation(participantUuid: string, surveyUuid: string): Promise<any> {
+        try {
+            const invitation = await InvitationModel.findOne({
+                where:{ participantUuid:participantUuid, surveyUuid:surveyUuid }
+            });
+            if (invitation) {
+                invitation.state = 'COMPLETED';
+                await invitation.save();
+                return {
+                    status:200,
+                    message:'La invitacion se ha completado y se contestaron todas las preguntas'
+                };
+            }
+            return {
+                status:500,
+                message:'Algo fallo'
+            };
+        } catch (error) {
+            return {
+                status:500,
+                error
+            };
+        }
+    }
+    async checkStateInvitation(uuid: string): Promise<any> {
+        try {
+            const invitation = await InvitationModel.findOne({
+                where: { participantUuid:uuid }
+            });
+            if(!invitation || invitation.state === 'COMPLETED' || invitation.state === 'SEND') return false;
+            return invitation.dataValues.participantUuid;
+        } catch (error) {
+            return false;
+        }
+    }
 
     async saveInvitations(invitations: Invitation[], participants:Participant[], surveyUuid:string): Promise<void> {
         try {

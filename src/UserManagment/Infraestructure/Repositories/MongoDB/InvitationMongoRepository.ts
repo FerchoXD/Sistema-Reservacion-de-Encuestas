@@ -4,6 +4,40 @@ import { IInvitation } from "../../../Domain/Ports/IInvitation";
 import InvitationModel from "../../Database/Models/MongoDB/InvitationModel";
 
 export class InvitationMongoRepository implements IInvitation {
+    async updateInvitation(uuid: string, surveyUuid: string): Promise<any> {
+        try {
+            const invitation = await InvitationModel.findOne({ participantUuid:uuid, surveyUuid:surveyUuid });
+            if (invitation) {
+                invitation.state = 'COMPLETED';
+                await invitation.save();
+                return {
+                    status:200,
+                    message:'La invitacion se ha completado y se contestaron todas las preguntas'
+                };
+            }
+            return {
+                status:500,
+                message:'Algo fallo'
+            };
+        } catch (error) {
+            console.error(error);
+            return {
+                status:500,
+                error
+            };
+        }
+    }
+    async checkStateInvitation(uuidParticipant: string): Promise<any> {
+        try {
+            const invitation = await InvitationModel.findOne({ participantUuid:uuidParticipant });
+            if (!invitation || invitation.state === 'COMPLETED' || invitation.state === 'SEND') {
+                return false;
+            }
+            return invitation.participantUuid;
+        } catch (error) {
+            return false;
+        }
+    }
     async saveInvitations(invitations: Invitation[], participants:Participant[], surveyUuid:string): Promise<void> {
         try {
             let index = 0;
