@@ -3,34 +3,40 @@ import { RegisterUserUseCase } from "../../Application/UseCase/RegisterUserUseCa
 
 export class RegisterUserController {
 
-    constructor(readonly registerUserUseCase:RegisterUserUseCase){
-    }
-
-    async run(req:Request, res:Response){
-        
-        if(!this.nameIsValid(req.body.name)){
+    constructor(private registerUserUseCase: RegisterUserUseCase) {}
+    
+    async run(req: Request, res: Response) {
+        // Valida el nombre
+        if (!this.nameIsValid(req.body.name)) {
             return res.status(400).json({
                 error: "Bad Request",
-                message: "El nombre no puede contener números ni caracteres especiales."
+                message: "El nombre no es válido."
             });
         }
 
-        if(!this.passwordIsValid(req.body.password)){
+        // Valida la contraseña
+        if (!this.passwordIsValid(req.body.password)) {
             return res.status(400).json({
                 error: "Bad Request",
                 message: "La contraseña debe tener al menos 8 caracteres, incluir un número y un carácter especial."
             });
         }
 
-        const user = await this.registerUserUseCase.run(req.body.name, req.body.password);
-        if(user.error === true){
-            return res.status(500).json(user)
+        try {
+            // Intenta registrar al usuario
+            const user = await this.registerUserUseCase.run(req.body.name, req.body.password);
+            // Si el registro es exitoso, devuelve el usuario
+            return res.status(201).json(user);
+        } catch (error: any) {
+            // Si hay un error conocido, devuelve un mensaje apropiado
+            if (error.message === 'El nombre ya está en uso.') {
+                return res.status(400).json({ message: error.message });
+            }
+            // Si hay otro tipo de error, devuelve un error 500
+            return res.status(500).json({ message: 'Error interno del servidor' });
         }
-        
-
-        return res.status(200).json(user);
     }
-    
+
     private nameIsValid(name: string): boolean {
         console.log(name);
         const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s-]+$/;

@@ -9,7 +9,7 @@ export class LoginUserController {
         if(!this.nameIsValid(req.body.name)){
             return res.status(400).json({
                 error: "Bad Request",
-                message: "Estructura del name incorrecta."
+                message: "Estructura del nombre incorrecta."
             });
         }
 

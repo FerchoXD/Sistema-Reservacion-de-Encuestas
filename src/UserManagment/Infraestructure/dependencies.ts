@@ -1,3 +1,5 @@
+import { UniqueNameValidatorService } from './Services/UniqueNameValidator';
+import { UniqueNameValidator } from './../Domain/Ports/UniqueNameValidator';
 import { DatabaseConfig } from "../../Database/Config/DatabaseConfig";
 import { MySQLConfig } from "../../Database/Config/MySQL/MySQLConfig";
 
@@ -11,7 +13,11 @@ import { ActivateUserController } from "./Controllers/ActivateUserController";
 import { LoginUserUseCase } from "../Application/UseCase/LoginUserUseCase";
 import { LoginUserController } from "./Controllers/LoginUserController";
 import { LogoutUserUseCase } from "../Application/UseCase/LogoutUserUseCase";
-import { LogoutUserController } from "./Controllers/LogoutUserController";
+import { LogoutUserController } from "./Controllers/LogoutUserController"; // Esta es una implementación hipotética de UniqueNameValidator
+
+// Creas las instancias de las dependencias necesarias
+const uniqueNameValidator = new UniqueNameValidatorService(); // Suponiendo que UniqueNameValidatorImpl es tu implementación concreta
+const userRepository = new UserMySqlRepository();
 
 const mysqlRepository = new UserMySqlRepository();
 const mongoRepository = new UserMongoRepository();
@@ -27,7 +33,7 @@ function getDatabaseConfig(currentRepository: any): DatabaseConfig {
     throw new Error('Unsupported repository type');
   }
 
-const registerUserUseCase = new RegisterUserUseCase(currentRepository);
+const registerUserUseCase = new RegisterUserUseCase(uniqueNameValidator, userRepository);
 const registerUserController = new RegisterUserController(registerUserUseCase);
 
 const activateUserUseCase = new ActivateUserUseCase(currentRepository);

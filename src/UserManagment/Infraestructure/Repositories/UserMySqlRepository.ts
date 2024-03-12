@@ -7,9 +7,10 @@ import bcrypt from "bcrypt";
 import { JWTService } from "../../Application/JWT/JWTService";
 import { v4 as uuidv4 } from 'uuid';
 import { Op } from 'sequelize';
+import { UniqueNameValidator } from '../../Domain/Ports/UniqueNameValidator';
 
 
-export class UserMySqlRepository implements UserInterface {
+export class UserMySqlRepository implements UserInterface, UniqueNameValidator {
     
     async save(user: User): Promise<any> {
         try {
@@ -118,6 +119,11 @@ export class UserMySqlRepository implements UserInterface {
             return this.createResponse(500, 'Error interno del servidor.');
         }
     }
+
+    async isUnique(name: string): Promise<boolean> {
+        const count = await UserModel.count({ where: { name } });
+        return count === 0;
+      }
 
     private generateUuid(): string {
         return uuidv4();
