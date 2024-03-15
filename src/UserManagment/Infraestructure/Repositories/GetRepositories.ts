@@ -1,4 +1,5 @@
 import { DatabaseType } from "../dependencies";
+import { AwardMongoRepository } from "./MongoDB/AwardMongoRepository";
 import { InvitationMongoRepository } from "./MongoDB/InvitationMongoRepository";
 import { OptionMongoRepository } from "./MongoDB/OptionMongoRepository";
 import { ParticipantMongoRepository } from "./MongoDB/ParticipantMongoRepository";
@@ -6,6 +7,7 @@ import { QuestionMongoRepository } from "./MongoDB/QuestionMongoRepository";
 import { ResponseMongoRepository } from "./MongoDB/ResponseMongoRepository";
 import { SurveyMongoRepository } from "./MongoDB/SurveyMongoRepository";
 import { UserMongoRepository } from "./MongoDB/UserMongoRepository";
+import { AwardMySQLRepository } from "./MySQL/AwardMySQLRepository";
 import { InvitationMySQLRepository } from "./MySQL/InvitationMySQLRepository";
 import { OptionRepository } from "./MySQL/OptionRepository";
 import { ParticipantMySQLRepository } from "./MySQL/ParticipantMySQLRepository";
@@ -47,4 +49,9 @@ export function getOptionRepository(dbType:DatabaseType) : OptionRepository | Op
 export function getResponseRepository(dbType:DatabaseType) : ResponseRepository | ResponseMongoRepository {
     if (dbType === 'MySQL') return new ResponseRepository();
     else return new ResponseMongoRepository();
+}
+
+export function getAwardRepository(dbType:DatabaseType) : AwardMongoRepository | AwardMySQLRepository {
+    if (dbType === 'MySQL') return new AwardMySQLRepository();
+    else return new AwardMongoRepository();
 }

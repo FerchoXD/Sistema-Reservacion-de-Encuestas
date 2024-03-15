@@ -4,6 +4,21 @@ import { IInvitation } from "../../../Domain/Ports/IInvitation";
 import InvitationModel from "../../Database/Models/MongoDB/InvitationModel";
 
 export class InvitationMongoRepository implements IInvitation {
+    async getAllInvitation(surveyUuid: string): Promise<any> {
+        try {
+            const getInvitations = await InvitationModel.find({ surveyUuid:surveyUuid, state:'COMPLETED'});
+            const uuidsParticipant:string[] = [];
+            getInvitations.forEach((invitation) => {
+                uuidsParticipant.push(invitation.participantUuid);
+            });
+            if(uuidsParticipant.length < 1) return false;
+            return uuidsParticipant;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
+    
     async updateInvitation(uuid: string, surveyUuid: string): Promise<any> {
         try {
             const invitation = await InvitationModel.findOne({ participantUuid:uuid, surveyUuid:surveyUuid });

@@ -1,3 +1,4 @@
+import { json } from "sequelize";
 import { Participant } from "../../../Domain/Entities/Participant";
 import { Question, TypeQuestion } from "../../../Domain/Entities/Question";
 import { ResponseParticipant } from "../../../Domain/Entities/ResponseParticipant";
@@ -5,11 +6,50 @@ import { IResponse } from "../../../Domain/Ports/IResponste";
 import ResponseModel from "../../Database/Models/MongoDB/ResponseModel";
 
 export class ResponseMongoRepository implements IResponse {
+    async getResponses(participantUuids: string[], questionUuids:string[]): Promise<any[]> {
+        try {
+            let participantsScores = new Map(participantUuids.map(uuid => [uuid, 0]));
+            const promises:any[] = [];
+            const participants: { participantUuid: string; score: number; }[] = [];
+            const responses: { participantUuid: string; score: number; }[] = [];
+            participantUuids.forEach((participantUuid:string) => {
+                const data = { participantUuid:participantUuid, score:0 };
+                participants.push(data);
+                questionUuids.forEach((questionUuid) => {
+                    promises.push(ResponseModel.findOne({ questionUuid: questionUuid, participantUuid: participantUuid }, 'score participantUuid -_id'));
+                    
+                });
+            });           
+            const results = await Promise.allSettled(promises);
+            results.forEach((result) => {
+                if(result.status === 'fulfilled'){
+                    responses.push(result.value);
+                }else{
+                    console.error(result.reason);
+                }
+            })
+
+            responses.forEach(response => {
+                let currentScore = participantsScores.get(response.participantUuid) || 0;
+                participantsScores.set(response.participantUuid, currentScore + response.score);
+            });
+            
+            const updatedParticipants = Array.from(participantsScores).map(([uuid, score]) => ({
+                participantUuid: uuid,
+                accumulatedScore: score
+            }));
+            return updatedParticipants.sort((a, b) => b.accumulatedScore - a.accumulatedScore);
+        } catch (error) {
+            console.error(error);
+            return [];
+        }
+    }
     async saveResponses(participantUuid: string, questions: Question[], responses: any[]): Promise<any> {
         try {
             if (questions.length != responses.length) return { status: 400, message: 'Se necesita todas las preguntas de una misma encuesta' };
             const responsesToSave = [];
             for (const [index, question] of questions.entries()) {
+                console.log(question);
                 const participant = new Participant('', '');
                 let score = 0;
                 let matchingOption;
@@ -35,6 +75,7 @@ export class ResponseMongoRepository implements IResponse {
                     questionUuid: question.uuid,
                     optionUuid: uuidOption
                 });
+                console.log(responseData);
                 responsesToSave.push(responseData);
             }
             console.log('Respuestas procesadas correctamente.');

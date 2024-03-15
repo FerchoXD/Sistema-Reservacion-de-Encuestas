@@ -6,4 +6,5 @@ export interface IInvitation {
     updateStateInvitation(token:string):Promise<Invitation|any>;
     checkStateInvitation(uuid:string):Promise<Invitation|any>;
     updateInvitation(participantUuid:string, surveyUuid:string):Promise<Invitation|any|void>;
+    getAllInvitation(surveyUuid:string):Promise<any>
 }
