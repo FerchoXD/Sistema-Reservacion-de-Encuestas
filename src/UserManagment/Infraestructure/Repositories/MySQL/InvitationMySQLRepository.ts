@@ -5,6 +5,24 @@ import { InvitationModel } from "../../Database/Models/MySQL/InvitationModel";
 
 
 export class InvitationMySQLRepository implements IInvitation {
+    async getAllInvitation(surveyUuid: string): Promise<any> {
+        try {
+            const getAllInvitations = await InvitationModel.findAll({ where: {
+                surveyUuid: surveyUuid,
+                state: 'COMPLETED'
+            } });
+            const uuidsParticipants:string[] = [];
+            getAllInvitations.forEach((invitation) => {
+                uuidsParticipants.push(invitation.dataValues.participantUuid);
+            });
+            if(uuidsParticipants.length < 1) return false;
+            return uuidsParticipants;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+        throw new Error("Method not implemented.");
+    }
     async updateInvitation(participantUuid: string, surveyUuid: string): Promise<any> {
         try {
             const invitation = await InvitationModel.findOne({

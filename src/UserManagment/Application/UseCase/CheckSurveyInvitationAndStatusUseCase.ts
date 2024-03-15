@@ -18,7 +18,7 @@ export class CheckSurveyInvitationAndStatusUseCase {
         if(!questions || questions.length === 0) return { status:404, msg:'Error al encontrar las preguntas o no se registro ninguna pregunta' };
         if(questions.type === 'Mongo'){
             const responses = await this.responsesRepository.saveResponses(uuidParticipant, questions.questionsEntity, body);
-            if(!responses) return { status:500, msg:'No se pudo guardar las respuestas' };
+            if(!responses || responses.status === 400) return { status:500, msg:'No se pudo guardar las respuestas' };
             return await this.invitationRepository.updateInvitation(participantUuid,surveyUuid);
         }
         questions = await this.optionRepository.getOptions(questions);

@@ -37,4 +37,25 @@ export class EmailService implements IEmailService {
             };
         }
     }
+
+    async sendAwards(data:any[], surveyUuid:string):Promise<boolean> {
+        try {
+            const promises: any[] = [];
+            data.forEach((participant) => {
+                console.log(participant.award);
+                const mailOptions = {
+                    from: '213497@ids.upchiapas.edu.mx',
+                    to: participant.email,
+                    subject: `Felicitaciones, ganaste un premio al contestar una encuesta con el uuuid: ${surveyUuid}`,
+                    html: `<p>Ganaste un ${participant.award.awardName} que sirve para ${participant.award.awardDescription}</p>`
+                };
+                promises.push(transporter.sendMail(mailOptions));
+            })
+            await Promise.allSettled(promises);
+            return true;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
 }

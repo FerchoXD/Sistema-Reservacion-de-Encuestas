@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { createSurvetAndQuestionAndAwardsController, activateSurveyController, sendSurveyInvitationsController, acceptInvitationController,
-         checkSurveyInvitationAndStatusController } 
+         checkSurveyInvitationAndStatusController, 
+         assignAwardsAndNotifyParticipantController} 
 from "../dependencies";
 
 
@@ -15,5 +16,7 @@ surveyRouter.post('/:surveyUuid/invite', sendSurveyInvitationsController.run.bin
 surveyRouter.patch('/accept-invitation/:invitationToken', acceptInvitationController.run.bind(acceptInvitationController));
 
 surveyRouter.post('/:surveyUuid/participant/:participantUuid/complete', checkSurveyInvitationAndStatusController.run.bind(checkSurveyInvitationAndStatusController));
+
+surveyRouter.post('/:surveyUuid/awards/assign-and-close', assignAwardsAndNotifyParticipantController.run.bind(assignAwardsAndNotifyParticipantController));
 
 export default surveyRouter;

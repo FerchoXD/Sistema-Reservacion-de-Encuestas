@@ -4,6 +4,20 @@ import { IQuestion } from "../../../Domain/Ports/IQuestion";
 import SurveyModel from "../../Database/Models/MongoDB/SurveyModel";
 
 export class QuestionMongoRepository implements IQuestion {
+    async getUuidsQuestion(surveyUuid: string): Promise<boolean | string[]> {
+        try {
+            const uuidsQuestion = await SurveyModel.find({ uuid:surveyUuid, status:'ENABLED' }, 'questions -_id');
+            if(!uuidsQuestion || uuidsQuestion.length < 1) return false;
+            const uuids:string[] = [];
+            uuidsQuestion[0].questions.forEach((question) => {
+                uuids.push(question.uuid);
+            });
+            return uuids;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
     async getAllQuestions(surveyUuid: string): Promise<any> {
         try {
             const survey = await SurveyModel.findOne({ uuid:surveyUuid });
